@@ -7,6 +7,8 @@ export default function App() {
       <Text>Restaurant-Management-App</Text>
     </View>
   );
+
+  
 }
 
 const styles = StyleSheet.create({
