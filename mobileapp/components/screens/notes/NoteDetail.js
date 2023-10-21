@@ -1,49 +1,59 @@
-import { useState } from 'react';
+import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 export default function NoteDetail({ navigation, route }) {
-    // data will from dailynotes
-    console.log('params:', route.params);
+    // Data will be from dailynotes
     const { header, date, comment } = route.params;
-    const [state, setState] = useState({ header: route.params.header, date: route.params.date });
+
     return (
-        // <View>
-        //     <Text>{state.header}</Text>
-        //     <Text>{state.date}</Text>
-        // </View>
         <View style={styles.container}>
-            <Text style={styles.input}>{header}</Text>
-            <Text style={styles.input}>{date}</Text>
-            <Text style={styles.input}>{comment}</Text>
+            <View style={styles.infoContainer}>
+                <Text style={styles.label}>Header:</Text>
+                <Text style={styles.value}>{header}</Text>
+            </View>
+            <View style={styles.infoContainer}>
+                <Text style={styles.label}>Date:</Text>
+                <Text style={styles.value}>{date}</Text>
+            </View>
+            <View style={{ ...styles.infoContainer, height: 80 }}>
+                <Text style={styles.label}>Comment:</Text>
+                <Text style={styles.value}>{comment}</Text>
+            </View>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        padding: 16,
+        backgroundColor: '#fff', // Background color of the notepad
     },
-    addButton: {
-        borderRadius: 50,
-    },
-    edges: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 5,
-        minWidth: 50,
-    },
-    input: {
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
         marginBottom: 16,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        padding: 8,
-        fontSize: 16,
     },
-    button: {
-        backgroundColor: '#3498db', // Customize the button color
+    infoContainer: {
+        marginBottom: 16,
+        padding: 16,
+        backgroundColor: '#f5f5f5', // Light gray background for each piece of information
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    value: {
+        fontSize: 16,
     },
 });
