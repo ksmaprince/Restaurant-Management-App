@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import { createNote } from '../../../network/useNoteService';
 import { TextInput as PaperTextInput } from 'react-native-paper';
+import { deleteNote, getUserNotes } from '../../../network/useNoteService';
+import { GlobalContext } from '../../../context/GlobalContext';
 const AddNote = ({ navigation }) => {
+    const { globalState, setGlobalState } = useContext(GlobalContext);
     const [header, setHeader] = useState('');
     const [date, setDate] = useState('');
     const [comment, setComment] = useState('');
-
     const handleAddNote = async () => {
         if (!header || !date || !comment) {
             alert("please fill the form");
@@ -18,6 +20,12 @@ const AddNote = ({ navigation }) => {
         const userId = "6534075de284f4b7d6093e81"; // for test
         console.log('userId', userId);
         const res = await createNote(userId, newNote);
+        if (res) {
+            console.log("Course deleted successfully");
+            const noteData = await getUserNotes(userId);
+            setGlobalState({ ...globalState, DailyNotes: noteData.data });
+            navigation.navigate('dailyNotes');
+        }
         setHeader('');
         setDate('');
         setComment('');

@@ -1,17 +1,17 @@
-import React, { useContext } from 'react';
-import { View, StyleSheet, FlatList, Pressable } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, StyleSheet, FlatList, Platform } from 'react-native';
 import { Text, FAB } from 'react-native-paper'; // Import FAB (Floating Action Button)
 import { GlobalContext } from "../../../context/GlobalContext";
 import { createStackNavigator } from '@react-navigation/stack';
-import NoteDetail from './NoteDetail';
 import { getUserNotes } from '../../../network/useNoteService';
 import AddNote from './AddNote';
 import { useFocusEffect } from '@react-navigation/native';
-
+import ShowItem from './NodeItem';
 const Stack = createStackNavigator();
 
 export default function DailyNotes({ navigation }) {
   const { globalState, setGlobalState } = useContext(GlobalContext);
+  const [dailyNotes, setDailyData] = useState({});
   const userId = "6534075de284f4b7d6093e81"; // for test
 
   const fetchNoteData = async () => {
@@ -25,47 +25,24 @@ export default function DailyNotes({ navigation }) {
     setGlobalState({ ...globalState, DailyNotes: noteData.data });
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchData();
-    }, [])
-  );
+  useEffect(() => {
+    setDailyData(globalState.DailyNotes);
+  }, [globalState.DailyNotes]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const toAdd = () => {
     navigation.navigate("addNote");
   }
 
-  const toDetail = (data) => {
-    console.log('data:::::::', data);
-    navigation.navigate("noteDetail", data);
-  }
-
-  const showItem = ({ item }) => {
-    return (
-      <View style={styles.itemContainer}>
-        <View style={styles.itemContent}>
-          <Text style={styles.itemText}>{item.header}</Text>
-          <Text style={styles.itemText}>{item.date}</Text>
-        </View>
-        <View style={styles.itemButton}>
-          <Pressable
-            onPress={() => toDetail(item)}
-            style={styles.button}
-            underlayColor="#D8BFD8"
-          >
-            <Text style={styles.buttonText}>></Text>
-          </Pressable>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <FlatList
-        data={globalState.DailyNotes}
+        data={dailyNotes}
         keyExtractor={(item) => item._id}
-        renderItem={(item) => showItem(item)}
+        renderItem={item => <ShowItem itemData={item.item} userId={userId} navigation={navigation} />}
         style={{ width: '100%' }}
       />
       {/* Add a Floating Action Button (FAB) */}
