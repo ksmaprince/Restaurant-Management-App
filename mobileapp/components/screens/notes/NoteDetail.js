@@ -1,20 +1,14 @@
 import { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
-export default function NoteDetail({ navigation }) {
+export default function NoteDetail({ navigation, note }) {
     // data will from dailynotes
-    const [state, State] = useState({ header: '', date: '' });
-
+    const [state, setState] = useState({ header: note.header, date: note.date });
+    console.log('aaaaaaaaaaaaaa', note)
     return (
         <View>
-            <Text
-                placeholder="Header"
-                value={state.header}
-            />
-            <Text
-                placeholder="Date"
-                value={state.date}
-            />
+            <Text>{state.header}</Text>
+            <Text>{state.date}</Text>
         </View>
     )
 }

@@ -82,7 +82,7 @@ function auth(req, res, next) {
 }
 
 //route
-app.use(auth)
+// app.use(auth) //comment for test
 
 //Get All Users
 app.get("/users", async (req, res) => {
@@ -162,6 +162,22 @@ app.delete("/users/:userId/foods/:foodId", async (req, res) => {
     }
 })
 
+//Get All notes from a specific user
+app.get("/users/:userId/notes", async (req, res) => {
+    try {
+
+        let ret = await db.collection(COLLECTION_NAME).findOne({
+            _id: new ObjectId(req.params.userId)
+        })
+        if (ret && ret.notes) {
+            res.status(200).send({ success: true, data: ret.notes });
+        } else {
+            res.status(200).send({ success: true, data: [] });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
 //Add new note
 app.post("/users/:userId/notes", async (req, res) => {
     try {

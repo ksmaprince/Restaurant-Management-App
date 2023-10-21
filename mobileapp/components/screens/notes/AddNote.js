@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet ,} from 'react-native';
+import { View, TextInput, StyleSheet, } from 'react-native';
 import { Button } from 'react-native-paper';
-
+import { createNote } from '../../../network/useNoteService'
 const AddNote = ({ navigation }) => {
     const [header, setHeader] = useState('');
     const [date, setDate] = useState('');
     const [comment, setComment] = useState('');
 
-    const handleAddNote = () => {
+    const handleAddNote = async () => {
         const newNote = { header, date, comment };
+        const userId = "6534075de284f4b7d6093e81" // for test
+        console.log('userId', userId);
+        const res = await createNote(userId, newNote);
         setHeader('');
         setDate('');
         setComment('');
+        navigation.navigate('notes');
     };
 
     return (

@@ -11,32 +11,32 @@ import { GlobalContext } from './context/GlobalContext';
 const Stack = createNativeStackNavigator()
 export default function App() {
 
-  const [globalState, setGlobalState] = useState({userInfo: null, foodData: []})
-
+  const [globalState, setGlobalState] = useState({ userInfo: null, foodData: [], DailyNotes: [] })
+  
   return (
-    <GlobalContext.Provider value={{globalState, setGlobalState}}>
-    <Provider theme={theme}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="WelcomeScreen"
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-          <Stack.Screen name="StartScreen" component={StartScreen} />
-          <Stack.Screen name="LoginScreen" component={LoginScreen} />
-          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-          <Stack.Screen name="Dashboard" component={DashboardScreen} />
-          <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
+    <GlobalContext.Provider value={{ globalState, setGlobalState }}>
+      <Provider theme={theme}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="WelcomeScreen"
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+            <Stack.Screen name="StartScreen" component={StartScreen} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
+            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+            <Stack.Screen name="Dashboard" component={DashboardScreen} />
+            <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
     </GlobalContext.Provider>
   );
 
-  
+
 }
 
 
