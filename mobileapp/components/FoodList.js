@@ -8,21 +8,63 @@ import {
   TextInput,
   ScrollView,
   SafeAreaView,
+  FlatList,
 } from "react-native";
 import { IconButton, MD3Colors, Divider } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import context from "../Context";
 export default function FoodList({ navigation }) {
-    const {foodData,setFoodData}=useContext(context);
-    console.log(foodData);
+  const { foodData, setFoodData } = useContext(context);
+  
+  const renderFoodItem=({item})=>{
+    console.log(item.image)
+    return(<>
+     <View style={styles.row}>
+          <View style={[styles.column, { width: "120",padding:20 }]}>
+            <Image
+               source={{ uri: item.image.uri }}
+              style={{ width: 100, height: 100 }}
+            />
+          </View>
+          <View style={[styles.column, { paddingTop: 20 }]}>
+            <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
+            <Text>Origin:{item.origin}</Text>
+            <Text>Price: ${item.price} </Text>
+            <View style={styles.row}>
+              <IconButton
+                icon="format-list-bulleted-triangle"
+                iconColor={MD3Colors.error50}
+                size={25}
+                onPress={()=>handleDetailFood(item)}
+              />
+              <IconButton
+                icon="book-edit"
+                iconColor={MD3Colors.error50}
+                size={25}
+                onPress={()=>handleEditFood(item)}
+              />
+
+              <IconButton
+                icon="delete-circle"
+                iconColor={MD3Colors.error50}
+                size={25}
+                onPress={handleDeleteFood}
+              />
+            </View>
+          </View>
+        </View>
+        <Divider style={{color:'red'}}/>
+    </>)
+  }
   const handleAddFood = () => {
     navigation.navigate("addfood");
   };
-  const handleEditFood = () => {
-    navigation.navigate("editfood");
+  const handleDetailFood = (item) => {
+    navigation.navigate("fooddetail", { item });
   };
-  const handleDetailFood = () => {
-    navigation.navigate("fooddetail");
+  
+  const handleEditFood = (item) => {
+    navigation.navigate("editfood", { item });
   };
   const handleDeleteFood = () => {};
   return (
@@ -53,55 +95,20 @@ export default function FoodList({ navigation }) {
         />
       </View>
       <View style={styles.roundButton}>
-      <IconButton
-                icon="plus-thick"
-                iconColor={MD3Colors.error50}
-                size={20}
-                onPress={handleAddFood}
-              /> </View>
-      <Divider />
-      <ScrollView style={{ width: "100%" }}>
-        
-       
-      <View style={styles.row}>
-    <View style={[styles.column, { width: "120" }]}>
-      <Image
-        source={require("../foodimages/burger.png")}
-        style={{ width: 100, height: 100 }}
-      />
-    </View>
-    <View style={[styles.column, { paddingTop: 20 }]}>
-      <Text style={{ fontWeight: "bold" }}>Chicken Noodle (POI)</Text>
-      <Text>Origin: Thailand</Text>
-      <Text>Price: $12 </Text>
-      <View style={styles.row}>
-     
         <IconButton
-          icon="book-edit"
+          icon="plus-thick"
           iconColor={MD3Colors.error50}
           size={20}
-          onPress={handleEditFood}
-        />
-        <IconButton
-          icon="format-list-bulleted-triangle"
-          iconColor={MD3Colors.error50}
-          size={20}
-          onPress={handleDetailFood}
-        />
-        <IconButton
-          icon="delete-circle"
-          iconColor={MD3Colors.error50}
-          size={20}
-          onPress={handleDeleteFood}
+          onPress={handleAddFood}
         />
       </View>
-    </View>
-  </View>
-  <Divider />
-
-        
-      </ScrollView>
-     
+      <Divider />
+      <FlatList
+        data={foodData}
+        keyExtractor={(item) => item._id}
+        renderItem={renderFoodItem}
+        style={{width:'100%'}}
+      />
     </SafeAreaView>
   );
 }
@@ -133,12 +140,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: "center",
     alignltems: "center",
-    overflow:"hidden",
-    
+    overflow: "hidden",
   },
-  plustext:{
-    color:'white',
-    fontSize:40,
-    width:30
-  }
+  plustext: {
+    color: "white",
+    fontSize: 40,
+    width: 30,
+  },
 });
