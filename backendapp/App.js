@@ -11,9 +11,7 @@ let COLLECTION_NAME = 'users'
 
 async function connectDB() {
     try {
-        const DB_URI = "mongodb://localhost:27017"
-        const client = new MongoClient(DB_URI)
-        //const client = new MongoClient(process.env.DB_URI)
+        const client = new MongoClient(process.env.DB_URI)
         await client.connect();
         db = client.db("cs_571_mobile_app_dev");
         console.log("DB Connected");

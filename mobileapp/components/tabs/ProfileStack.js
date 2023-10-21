@@ -1,13 +1,13 @@
-import Background from "../../components/Background"
-import Logo from "../../components/Logo"
-import Header from "../../components/Header"
-import Paragraph from "../../components/Paragraph"
-import Button from "../../components/Button"
+import Background from "../Background"
+import Logo from "../Logo"
+import Header from "../Header"
+import Paragraph from "../Paragraph"
+import Button from "../Button"
 import { useContext } from "react"
 import { GlobalContext } from "../../context/GlobalContext"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-export const ProfileScreen = ({navigation}) => {
+export const ProfileStack = ({navigation}) => {
     const {globalState, setGlobalState} = useContext(GlobalContext)
     const logoutPress = async () => {
         try {
