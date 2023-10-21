@@ -1,52 +1,39 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import context from './Context';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AddFood from './components/AddFood';
-import EditFood from './components/EditFood';
-import FoodDetail from './components/FoodDetail';
-import FoodList from './components/FoodList';
 import { useEffect, useState } from 'react';
-import {fooddata} from './tempFoodData';
-const Stack = createNativeStackNavigator();
+import { NavigationContainer } from '@react-navigation/native';
+import { Provider } from 'react-native-paper';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { theme } from './core/theme'
+
+import { StartScreen, LoginScreen, RegisterScreen, ResetPasswordScreen, DashboardScreen, WelcomeScreen, } from './components/screens'
+import { GlobalContext } from './context/GlobalContext';
+
+const Stack = createNativeStackNavigator()
 export default function App() {
-  //load data form db
-  const [foodData,setFoodData]=useState([]);
-  const getDataFromDB=async()=>{
-   
-  }
-  useEffect(()=>{
-    setFoodData([...fooddata]);
-    console.log(foodData);
-  },[]);
+
+  const [globalState, setGlobalState] = useState({userInfo: null, foodData: []})
+
   return (
-    <context.Provider value={{foodData,setFoodData}}>
-    <NavigationContainer>
-    <Stack.Navigator initialRouteName="foodlist">
-      <Stack.Screen
-        name="foodlist"
-        component={FoodList}
-        options={{ title: "Food List", headerShown: true }}
-      />
-      <Stack.Screen
-        name="fooddetail"
-        component={FoodDetail}
-        options={{ title: "Food Detail", headerShown: true }}
-      />
-      <Stack.Screen
-        name="addfood"
-        component={AddFood}
-        options={{ title: "Add New Food", headerShown: true }}
-      />
-      <Stack.Screen
-        name="editfood"
-        component={EditFood}
-        options={{ title: "Edit Food", headerShown: true }}
-      />
-    </Stack.Navigator>
-  </NavigationContainer>
-    </context.Provider>
+    <GlobalContext.Provider value={{globalState, setGlobalState}}>
+    <Provider theme={theme}>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="WelcomeScreen"
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+          <Stack.Screen name="StartScreen" component={StartScreen} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
+    </GlobalContext.Provider>
   );
 
   

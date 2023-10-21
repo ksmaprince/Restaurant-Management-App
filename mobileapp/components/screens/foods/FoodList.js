@@ -1,59 +1,63 @@
-import { StatusBar } from "expo-status-bar";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Image,
   TextInput,
-  ScrollView,
   SafeAreaView,
   FlatList,
 } from "react-native";
 import { IconButton, MD3Colors, Divider } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import context from "../Context";
+import { GlobalContext } from "../../../context/GlobalContext";
+import { fooddata } from './tempFoodData'
 export default function FoodList({ navigation }) {
-  const { foodData, setFoodData } = useContext(context);
-  
-  const renderFoodItem=({item})=>{
+
+  const { globalState, setGlobalState } = useContext(GlobalContext);
+
+  useEffect(() => {
+    setGlobalState({ ...globalState, foodData: fooddata });
+  }, []);
+
+  const renderFoodItem = ({ item }) => {
     console.log(item.image)
-    return(<>
-     <View style={styles.row}>
-          <View style={[styles.column, { width: "120",padding:20 }]}>
-            <Image
-               source={{ uri: item.image.uri }}
-              style={{ width: 100, height: 100 }}
+    return (<>
+      <View style={styles.row}>
+        <View style={[styles.column, { width: "120", padding: 20 }]}>
+          <Image
+            source={{ uri: item.image.uri }}
+            style={{ width: 100, height: 100 }}
+          />
+        </View>
+        <View style={[styles.column, { paddingTop: 20 }]}>
+          <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
+          <Text>Origin:{item.origin}</Text>
+          <Text>Price: ${item.price} </Text>
+          <View style={styles.row}>
+            <IconButton
+              icon="format-list-bulleted-triangle"
+              iconColor={MD3Colors.error50}
+              size={25}
+              onPress={() => handleDetailFood(item)}
+            />
+            <IconButton
+              icon="book-edit"
+              iconColor={MD3Colors.error50}
+              size={25}
+              onPress={() => handleEditFood(item)}
+            />
+
+            <IconButton
+              icon="delete-circle"
+              iconColor={MD3Colors.error50}
+              size={25}
+              onPress={handleDeleteFood}
             />
           </View>
-          <View style={[styles.column, { paddingTop: 20 }]}>
-            <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
-            <Text>Origin:{item.origin}</Text>
-            <Text>Price: ${item.price} </Text>
-            <View style={styles.row}>
-              <IconButton
-                icon="format-list-bulleted-triangle"
-                iconColor={MD3Colors.error50}
-                size={25}
-                onPress={()=>handleDetailFood(item)}
-              />
-              <IconButton
-                icon="book-edit"
-                iconColor={MD3Colors.error50}
-                size={25}
-                onPress={()=>handleEditFood(item)}
-              />
-
-              <IconButton
-                icon="delete-circle"
-                iconColor={MD3Colors.error50}
-                size={25}
-                onPress={handleDeleteFood}
-              />
-            </View>
-          </View>
         </View>
-        <Divider style={{color:'red'}}/>
+      </View>
+      <Divider style={{ color: 'red' }} />
     </>)
   }
   const handleAddFood = () => {
@@ -62,11 +66,11 @@ export default function FoodList({ navigation }) {
   const handleDetailFood = (item) => {
     navigation.navigate("fooddetail", { item });
   };
-  
+
   const handleEditFood = (item) => {
     navigation.navigate("editfood", { item });
   };
-  const handleDeleteFood = () => {};
+  const handleDeleteFood = () => { };
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -104,10 +108,10 @@ export default function FoodList({ navigation }) {
       </View>
       <Divider />
       <FlatList
-        data={foodData}
+        data={globalState.foodData}
         keyExtractor={(item) => item._id}
         renderItem={renderFoodItem}
-        style={{width:'100%'}}
+        style={{ width: '100%' }}
       />
     </SafeAreaView>
   );

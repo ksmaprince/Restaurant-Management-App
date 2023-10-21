@@ -1,18 +1,17 @@
 const express = require('express')
 const app = express();
 const cors = require('cors')
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken')
 const PRIVATE_KEY = "K-19-OCT-2023"
+require('dotenv').config();
 
 let db = null;
 let COLLECTION_NAME = 'users'
 
 async function connectDB() {
     try {
-        const DB_URI = "mongodb://localhost:27017"
-        const client = new MongoClient(DB_URI)
-        //const client = new MongoClient(process.env.DB_URI)
+        const client = new MongoClient(process.env.DB_URI)
         await client.connect();
         db = client.db("cs_571_mobile_app_dev");
         console.log("DB Connected");
@@ -45,13 +44,14 @@ app.post("/signup", async (req, res) => {
 
 app.post('/login', async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { email, password } = req.body;
+        console.log(req.body)
         let ret = await db.collection(COLLECTION_NAME).find({}).toArray()
-        let user = ret.find(x => x.username === username && x.password === password)
+        let user = ret.find(x => x.email === email && x.password === password)
         if (user) {
-            const token = jwt.sign({ username }, PRIVATE_KEY)
-            const profile = { name: user.name, phone: user.phone, image: user.image }
-            return res.send({ success: true, data: token, user: profile })
+            const token = jwt.sign({ email }, PRIVATE_KEY)
+            const profile = { id: user._id, name: user.name, phone: user.phone, email: user.email, image: user.image, token: token }
+            return res.send({ success: true, data: profile })
         } else {
             res.status(401).send({ success: false, error: `Invalid user name and password` });
         }
@@ -94,11 +94,28 @@ app.get("/users", async (req, res) => {
     }
 })
 
+//Get All Food from a specific user
+app.get("/users/:userId/foods", async (req, res) => {
+    try {
+        let ret = await db.collection(COLLECTION_NAME).findOne({
+            _id: new Object(req.params.userId)
+        })
+        console.log(ret)
+        if (ret) {
+            res.status(200).send({ success: true, data: ret });
+        }
+        res.status(200).send({ success: true, data: ret });
+    } catch (error) {
+        res.status(500).send({ success: false, error: `DB Error: ${error.message}` });
+    }
+})
+
 //Add new food
-app.put("/users/:userId/foods", async (req, res) => {
+app.post("/users/:userId/foods", async (req, res) => {
     try {
         const food = req.body;
         food._id = new ObjectId();
+        console.log(food)
         const ret = await db.collection(COLLECTION_NAME).updateOne(
             { _id: new ObjectId(req.params.userId) },
             { $push: { foods: food } }
@@ -146,7 +163,7 @@ app.delete("/users/:userId/foods/:foodId", async (req, res) => {
 })
 
 //Add new note
-app.put("/users/:userId/notes", async (req, res) => {
+app.post("/users/:userId/notes", async (req, res) => {
     try {
         const note = req.body;
         note._id = new ObjectId();
@@ -197,7 +214,7 @@ app.delete("/users/:userId/notes/:noteId", async (req, res) => {
 })
 
 //Add new order
-app.put("/users/:userId/orders", async (req, res) => {
+app.post("/users/:userId/orders", async (req, res) => {
     try {
         const order = req.body;
         order._id = new ObjectId();
