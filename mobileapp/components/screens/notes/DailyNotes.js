@@ -30,36 +30,35 @@ export default function DailyNotes({ navigation }) {
     //toAdd
     navigation.navigate("addNote");
   }
-  const toDetail = () => {
-    navigation.navigate("note-detail");
+  const toDetail = (data) => {
+    console.log('data:::::::', data);
+    navigation.navigate("noteDetail", data);
   }
 
   const showItem = ({ item }) => {
-    console.log(item);
     return (
-      <View>
-        <Text>{item.header}</Text>
-        <Text>{item.date}</Text>
-        <View style={styles.edges}>
+      <View style={styles.itemContainer}>
+        <View style={styles.itemContent}>
+          <Text style={styles.itemText}>{item.header}</Text>
+          <Text style={styles.itemText}>{item.date}</Text>
+          <Text style={styles.itemText}>{item.comment}</Text>
+        </View>
+        <View style={styles.itemButton}>
           <Pressable
-            onPress={toDetail}
+            onPress={() => toDetail(item)}
             style={styles.button}
-            underlayColor="#5398DC">
-            <Text style={styles.buttonText}>detail</Text>
+            underlayColor="#5398DC"
+          >
+            <Text style={styles.buttonText}>Detail</Text>
           </Pressable>
         </View>
       </View>
-    )
+    );
   }
-  return (
-    <View style={styles.container}>
-      {/* <Stack.Navigator initialRouteName="note-detail"> */}
-        {/* <Stack.Screen name="add-note" component={AddNote} options={{ title: 'Add Note' }} /> */}
-        {/* <Stack.Screen name="note-detail" component={NoteDetail} options={{ title: 'Note Detail' }} /> */}
-      {/* </Stack.Navigator> */}
 
-      {/* Need to show list here ... */}
-      
+  return (
+
+    <View style={styles.container}>
       <FlatList
         data={globalState.DailyNotes}
         keyExtractor={(item) => item._id}
@@ -81,5 +80,30 @@ export default function DailyNotes({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  }
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  itemContent: {
+    flexDirection: 'row',
+  },
+  itemText: {
+    marginHorizontal: 10,
+  },
+  itemButton: {
+    marginLeft: 'auto', // Push the button to the right
+  },
+  button: {
+    borderRadius: 5,
+    padding: 10,
+    backgroundColor: '#5398DC',
+  },
+  buttonText: {
+    color: 'white',
+  },
 });

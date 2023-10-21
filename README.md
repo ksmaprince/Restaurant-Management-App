@@ -16,6 +16,8 @@ CS-571 Mobile Application Development, Student Projects Fullstack (React Native,
 * List of notes, but each item only contains header and date.
 * Owner can add/view notes
 * A note detail has a header, date, and comment. For example, note = {date: new Date(), header: 'Noodle', comment: 'Need to have more noodles next week'}
+
+
 3. Personal profile
 * This screen shows the owner's information (email, phone number, full name, password, address)
 * Owners can change their phone number, password, full name, and address on the screen, but not email.

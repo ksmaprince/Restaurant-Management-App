@@ -15,7 +15,7 @@ const AddNote = ({ navigation }) => {
         setHeader('');
         setDate('');
         setComment('');
-        navigation.navigate('notes');
+        navigation.navigate('dailyNotes');
     };
 
     return (
