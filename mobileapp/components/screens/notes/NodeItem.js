@@ -12,7 +12,7 @@ export default function ShowItem({ itemData, userId, navigation }) {
     const toDetail = (data) => {
         navigation.navigate("noteDetail", data);
     }
-
+git 
     const toDeleteNote = async () => {
         const success = await deleteNote(userId, itemData._id);
         if (success) {
