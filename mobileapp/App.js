@@ -1,11 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { Provider } from 'react-native-paper';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { theme } from './core/theme'
 
+import { StartScreen, LoginScreen, RegisterScreen, ResetPasswordScreen, DashboardScreen, WelcomeScreen, } from './components/screens'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GlobalContext } from './context/GlobalContext';
+
+const Stack = createNativeStackNavigator()
 export default function App() {
+
+  const [globalState, setGlobalState] = useState({userInfo: null})
+
   return (
-    <View style={styles.container}>
-      <Text>Restaurant-Management-App</Text>
-    </View>
+    <GlobalContext.Provider value={{globalState, setGlobalState}}>
+    <Provider theme={theme}>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="WelcomeScreen"
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+          <Stack.Screen name="StartScreen" component={StartScreen} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
+    </GlobalContext.Provider>
   );
 }
 
