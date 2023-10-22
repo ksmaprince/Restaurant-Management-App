@@ -54,6 +54,10 @@ export default function RegisterScreen({ navigation }) {
           //   }
           // }])
           alert('User created successfully')
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'LoginScreen' }],
+          })
         } else {
           // Alert.alert('Status', ret.error, [{
           //   text: 'Okay',

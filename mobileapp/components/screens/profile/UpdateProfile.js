@@ -11,7 +11,8 @@ import { nameValidator } from '../../../helpers/nameValidator'
 import { phoneValidator } from '../../../helpers/phoneValidator'
 import { theme } from '../../../core/theme'
 import { StyleSheet } from "react-native"
-import { ActivityIndicator } from "react-native-paper"
+import { ActivityIndicator, Avatar } from "react-native-paper"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 export const UpdateProfile = ({ navigation }) => {
     const { globalState, setGlobalState } = useContext(GlobalContext)
@@ -39,18 +40,11 @@ export const UpdateProfile = ({ navigation }) => {
             setLoading(false)
             if (ret) {
                 if (ret.success) {
-                    // Alert.alert('Status', 'Profile updated successfully', [{
-                    //     text: 'Okay',
-                    //     onPress: () => {
-                    //         navigation.reset({
-                    //             index: 0,
-                    //             routes: [{ name: 'LoginScreen' }],
-                    //         })
-                    //     }
-                    // }])
-                    setGlobalState({...globalState, userInfo: {...globalState.userInfo, name: name.value, phone: phone.value, email: email.value}})
+                    await AsyncStorage.setItem("USER", JSON.stringify(ret.data))
+                    setGlobalState({ ...globalState, userInfo: ret.data})
                     alert('Profile updated successfully')
                     navigation.goBack()
+
                 } else {
                     // Alert.alert('Status', ret.error, [{
                     //   text: 'Okay',
@@ -66,6 +60,8 @@ export const UpdateProfile = ({ navigation }) => {
                 // }])
                 alert('Update profile is unsuccessful!')
             }
+
+
         } catch (error) {
             setLoading(false)
             // Alert.alert('Status', 'Update profile is unsuccessful!', [{

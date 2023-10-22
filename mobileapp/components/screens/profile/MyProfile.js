@@ -8,18 +8,14 @@ import { GlobalContext } from "../../../context/GlobalContext"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { ActivityIndicator, Avatar } from "react-native-paper"
 import * as ImagePicker from 'expo-image-picker';
+import { useFirebase } from "../../../network/useFirebase"
+import { useUserService } from "../../../network/useUserService"
 
 export const MyProfile = ({ navigation }) => {
     const { globalState, setGlobalState } = useContext(GlobalContext)
-    const [image, setImage] = useState(null)
-    const [loading, setLoading] = useState(true)
-
-    useEffect(()=> {
-        setTimeout(()=> {
-            setLoading(false)
-            setImage("http://localhost:5001/users/images/KSMA.jpg")
-        }, 1000)
-    }, [])
+    const [loading, setLoading] = useState(false)
+    const { uploadImage } = useFirebase()
+    const {updateProfileImage} = useUserService()
 
     const logoutPress = async () => {
         try {
@@ -42,7 +38,27 @@ export const MyProfile = ({ navigation }) => {
             quality: 1,
         });
         if (!result.canceled) {
-            setImage(result.assets[0].uri)
+            try {
+                setLoading(true)
+                const response = await fetch(result.assets[0].uri);
+                const blob = await response.blob();
+
+                //Upload to Cloud Storage
+                const imageRet = await uploadImage(globalState.userInfo.id, blob)
+                const image ={url: imageRet.imageUrl} ;
+
+                //Update image url to current user
+                const ret = await updateProfileImage(globalState.userInfo.token, globalState.userInfo.id, image)
+                
+                if (ret && ret.success) {
+                    setLoading(false)
+                    await AsyncStorage.setItem("USER", JSON.stringify(ret.data))
+                    setGlobalState({ ...globalState, userInfo: ret.data})
+                    alert(imageRet.message)
+                }
+            } catch (error) {
+                alert(error.message)
+            }
         }
     };
 
@@ -53,7 +69,7 @@ export const MyProfile = ({ navigation }) => {
     return (
         <Background>
 
-            {image ? <Avatar.Image source={image} size={150} /> : <Logo />}
+            {globalState.userInfo.image ? <Avatar.Image source={globalState.userInfo.image} size={150} /> : <Logo />}
             {loading && <ActivityIndicator size='small' />}
             <Header>{globalState.userInfo.name} </Header>
             <Paragraph>

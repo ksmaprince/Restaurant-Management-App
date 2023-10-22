@@ -52,7 +52,7 @@ app.post('/login', async (req, res) => {
         if (user) {
             const token = jwt.sign({ email }, PRIVATE_KEY)
             const profile = { id: user._id, name: user.name, phone: user.phone, email: user.email, image: user.image, token: token }
-            return res.send({ success: true, data: profile })
+            return res.status(200).send({ success: true, data: profile })
         } else {
             res.status(401).send({ success: false, error: `Invalid user name and password` });
         }
@@ -300,10 +300,39 @@ app.put("/users/:userId", async (req, res) => {
             },
             { $set: { name: user.name, phone: user.phone, email: user.email} }
         );
-        res.status(200).send({ success: true, data: ret });
+
+        const userInfo = await db.collection(COLLECTION_NAME).findOne({
+            _id: new ObjectId(req.params.userId)
+        })
+        const arr = req.headers.authorization.split(" ")
+        const profile = { id: userInfo._id, name: userInfo.name, phone: userInfo.phone, email: userInfo.email, image: userInfo.image, token: arr[1] }
+        res.status(200).send({ success: true, data: profile });
+
 
     } catch (error) {
         res.status(500).send({ success: false, error: "Can't update profile: " + error.message });
+    }
+})
+
+//Update Profile Image
+app.put("/users/:userId/images", async (req, res) => {
+    try {
+        const image = req.body;
+        const ret = await db.collection(COLLECTION_NAME).updateOne(
+            {
+                _id: new ObjectId(req.params.userId)
+            },
+            { $set: { image: image.url } }
+        );
+        const userInfo = await db.collection(COLLECTION_NAME).findOne({
+            _id: new ObjectId(req.params.userId)
+        })
+        const arr = req.headers.authorization.split(" ")
+        const profile = { id: userInfo._id, name: userInfo.name, phone: userInfo.phone, email: userInfo.email, image: userInfo.image, token: arr[1] }
+        res.status(200).send({ success: true, data: profile });
+
+    } catch (error) {
+        res.status(500).send({ success: false, error: "Can't update profile image: " + error.message });
     }
 })
 

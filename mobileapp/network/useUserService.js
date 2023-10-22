@@ -46,6 +46,9 @@ export const useUserService = () => {
     }
 
     const updateProfile = async (token, userId, user) => {
+        console.log('UserId', userId)
+        console.log('User', user)
+        console.log('Token', token)
         try {
             const response = await fetch(`${BASE_URL}/users/${userId}`, {
                 method: "PUT",
@@ -59,9 +62,27 @@ export const useUserService = () => {
             const json = await response.json()
             return json
         } catch (error) {
-
+            throw error
         }
     }
 
-    return { getUsers, createUser, startLogin, updateProfile }
+    const updateProfileImage = async (token, userId, image) => {
+        try {
+            const response = await fetch(`${BASE_URL}/users/${userId}/images`, {
+                method: "PUT",
+                headers: {
+                    Accept: "application/json",
+                    'Content-Type': "application/json",
+                    'Authorization': `Barer ${token}`
+                },
+                body: JSON.stringify(image)
+            })
+            const json = await response.json()
+            return json
+        } catch (error) {
+            throw error
+        }
+    }
+
+    return { getUsers, createUser, startLogin, updateProfile, updateProfileImage }
 }
