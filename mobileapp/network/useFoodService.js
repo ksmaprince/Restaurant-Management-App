@@ -21,48 +21,63 @@ export const useFoodService = () => {
         }
     }
 
-    const updateFood = async (userId,userToken, food) => {
+    const updateFood = async (token, userId, food) => {
         try {
+            console.log("servicefood",food)
             const response = await fetch(`${BASE_URL}/users/${userId}/foods/${food._id}`, {
-                method: "POST",
+                method: "PUT",
                 headers: {
-                    'Authorization': `Bearer ${userToken}`,
-                    'Content-Type': 'application/json',
-                  },
-                body: JSON.stringify(food)
+                    Accept: "application/json",
+                    'Content-Type': "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(food),
             })
             const json = await response.json()
             return json;
         } catch (error) {
-            throw error;
+            console.error("error：" + error);
         }
     }
+    
 
-    const deleteFood = async (userId,userToken, foodId) => {
+    const deleteFood = async (token, userId, foodId) => {
         try {
             const response = await fetch(`${BASE_URL}/users/${userId}/foods/${foodId}`, {
-                method: "DELETE"
-            })
-            const json = await response.json();
-            return json;
-        } catch (error) {
-            throw error;
-        }
-    }
-    const getFood = async (userId,userToken) => {
-        try {
-            const response = await fetch(`${BASE_URL}/users/${userId}/foods`, {
-                method: "GET",
+                method: "DELETE",
                 headers: {
-                    'Authorization': `Bearer ${userToken}`,
-                    'Content-Type': 'application/json', 
-                  }
+                    Accept: "application/json",
+                    'Content-Type': "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
             })
             const json = await response.json();
             return json;
         } catch (error) {
-            throw error;
+            console.error("error " + error);
         }
     }
-    return { createFood, updateFood, deleteFood, getFood }
+    const getFoods = async (token,userId) => {
+        try {
+            console.log(userId);
+            const response = await fetch(`${BASE_URL}/users/${userId}/foods`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            if (response.status === 200) {
+                console.log('res', response);
+                const data = await response.json();
+                console.log('data', data);
+                return data;
+            } else {
+                return "DB Error";
+            }
+        } catch (error) {
+            console.error("error " + error);
+        }
+    }
+    return { createFood, updateFood, deleteFood, getFoods }
 }
