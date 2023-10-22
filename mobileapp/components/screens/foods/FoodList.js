@@ -17,8 +17,9 @@ import { useFoodService } from "../../../network/useFoodService";
 export default function FoodList({ navigation }) {
   const { globalState, setGlobalState } = useContext(GlobalContext);
   const {getFoods}=useFoodService();
-  const [foodData, setFoodData] = useState({});
+  const [foodData, setFoodData] = useState([]);
   const userId = globalState.userInfo.id;
+  const [searchText,setSearhText]=useState("");
   const fetchFoodData = async () => {
     const fdata = await getFoods(globalState.userInfo.token,userId);
     return fdata;
@@ -105,6 +106,24 @@ export default function FoodList({ navigation }) {
       routes: [{ name: 'foodlist' }], // Specify the stack to reset
     });
   };
+  const handleAsc=()=>{
+    const sortedData = [...globalState.foodData]; // 
+    sortedData.sort((a, b) => a.name.localeCompare(b.name)); 
+  
+    setGlobalState({ ...globalState, foodData: sortedData })
+  }
+  const handleDesc=()=>{
+    const sortedData = [...globalState.foodData]; // 
+    sortedData.sort((a, b) => b.name.localeCompare(a.name)); 
+  
+    setGlobalState({ ...globalState, foodData: sortedData })
+  }
+  const handleSearchText=(text)=>{
+    setSearhText(text);
+     }
+    
+
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -124,6 +143,8 @@ export default function FoodList({ navigation }) {
             paddingHorizontal: 10,
             paddingLeft: 40,
           }}
+          onChangeText={handleSearchText}
+          value={searchText}
         />
         <Icon
           name="search"
@@ -131,6 +152,23 @@ export default function FoodList({ navigation }) {
           color="#333"
           style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}
         />
+         <IconButton
+          icon="sort-alphabetical-ascending"
+          iconColor={MD3Colors.error50}
+          size={30}
+          style={{ position: "absolute", top: -10, right: 40, zIndex: 1 }}
+          onPress={handleAsc}
+        />
+         <IconButton
+          icon="sort-alphabetical-descending"
+          iconColor={MD3Colors.error50}
+          size={30}
+          style={{ position: "absolute", top: -10, right:5, zIndex: 1 }}
+          onPress={handleDesc}
+        />
+       
+         
+        
       </View>
       <View style={styles.roundButton}>
         <IconButton
