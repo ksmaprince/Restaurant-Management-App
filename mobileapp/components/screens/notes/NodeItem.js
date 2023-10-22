@@ -42,12 +42,26 @@ export default function ShowItem({ itemData, userId, navigation }) {
             ]);
         }
     };
+    const dateObj = new Date(itemData.date);
 
+    const formattedDate = dateObj.toLocaleString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+    });
+
+    const toEdit = (data) => {
+        console.log('data:', data)
+        navigation.navigate("editNote", { data: data, userId });
+    }
     return (
         <View style={styles.itemContainer}>
             <View style={styles.itemContent}>
                 <Text style={styles.itemText}>{itemData.header}</Text>
-                <Text style={styles.itemText}>{itemData.date}</Text>
+                <Text style={styles.itemText}>{formattedDate}</Text>
             </View>
             <View style={styles.itemButton}>
                 <IconButton
@@ -55,6 +69,12 @@ export default function ShowItem({ itemData, userId, navigation }) {
                     iconColor={MD3Colors.error50}
                     size={25}
                     onPress={() => toDetail(itemData)}
+                />
+                <IconButton
+                    icon="book-edit"
+                    iconColor={MD3Colors.error50}
+                    size={25}
+                    onPress={() => toEdit(itemData)}
                 />
                 <IconButton
                     icon="delete-circle"
@@ -81,12 +101,16 @@ const styles = StyleSheet.create({
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
+        borderRadius: 8,
     },
     itemContent: {
-        flexDirection: 'row',
+        flexDirection: 'column',
     },
     itemText: {
-        marginHorizontal: 10,
+        marginHorizontal: 20,
+        margin: 15,
+        fontWeight: 'bold',
+        fontSize: 21,
     },
     itemButton: {
         marginLeft: 'auto',
