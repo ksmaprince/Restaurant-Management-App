@@ -28,7 +28,6 @@ export const UpdateProfile = ({ navigation }) => {
         const emailError = emailValidator(email.value)
         if (emailError || nameError || phoneError) {
             setEmail({ ...email, error: emailError })
-            setPassword({ ...password, error: passwordError })
             setPhone({ ...phone, error: phoneError })
             setName({ ...name, error: nameError })
             return
