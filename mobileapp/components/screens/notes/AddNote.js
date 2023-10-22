@@ -1,60 +1,100 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet ,} from 'react-native';
+import React, { useState, useContext, useRef } from 'react';
+import { StyleSheet, TextInput, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
+import { createNote } from '../../../network/useNoteService';
+import { getUserNotes } from '../../../network/useNoteService';
+import { GlobalContext } from '../../../context/GlobalContext';
 
 const AddNote = ({ navigation }) => {
+    const { globalState, setGlobalState } = useContext(GlobalContext);
     const [header, setHeader] = useState('');
-    const [date, setDate] = useState('');
+    // const [date, setDate] = useState('');
     const [comment, setComment] = useState('');
+    const [commentHeight, setCommentHeight] = useState(40);
 
-    const handleAddNote = () => {
+    const handleAddNote = async () => {
+        const date = new Date();
+        if (!header || !comment) {
+            alert("Please fill out the form");
+            return;
+        }
+
         const newNote = { header, date, comment };
+        const userId = globalState.userInfo.id;
+        const res = await createNote(globalState.userInfo.token, userId, newNote);
+        if (res) {
+            console.log("Note added successfully");
+            const noteData = await getUserNotes(globalState.userInfo.token,userId);
+            setGlobalState({ ...globalState, DailyNotes: noteData.data });
+            navigation.navigate('dailyNotes');
+        }
         setHeader('');
-        setDate('');
         setComment('');
+        setCommentHeight(40);
+        navigation.navigate('dailyNotes');
+    };
+
+    const handleContentSizeChange = (contentWidth, contentHeight) => {
+        if (contentHeight > 80) {
+            setCommentHeight(80);
+        } else {
+            setCommentHeight(contentHeight);
+        }
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <TextInput
-                style={styles.input}
-                placeholder="Header"
+                style={styles.infoContainer}
+                label="Header"
+                placeholder="Enter a header"
                 value={header}
                 onChangeText={(text) => setHeader(text)}
+                required
             />
             <TextInput
-                style={styles.input}
-                placeholder="Date"
-                value={date}
-                onChangeText={(text) => setDate(text)}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Comment"
+                style={{ ...styles.infoContainer, height: commentHeight }}
+                label="Comment"
+                placeholder="Enter a comment"
                 value={comment}
                 onChangeText={(text) => setComment(text)}
+                multiline
+                onContentSizeChange={(e) => {
+                    handleContentSizeChange(e.nativeEvent.contentSize.width, e.nativeEvent.contentSize.height);
+                }}
+                required
             />
-            <Button mode="contained" style={styles.button} onPress={handleAddNote}>Add Note</Button>
-        </View>
+            <Button mode="contained" style={styles.button} onPress={handleAddNote}>
+                Add Note
+            </Button>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         padding: 16,
         justifyContent: 'center',
-    },
-    input: {
-        marginBottom: 16,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        padding: 8,
-        fontSize: 16,
+        backgroundColor: '#fff',
+        flexGrow: 1,
     },
     button: {
-        backgroundColor: '#3498db', // Customize the button color
+        backgroundColor: '#3498db',
+        marginTop: 16,
+    },
+    infoContainer: {
+        marginBottom: 16,
+        padding: 16,
+        backgroundColor: '#f5f5f5',
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
 });
 

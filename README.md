@@ -9,10 +9,15 @@ CS-571 Mobile Application Development, Student Projects Fullstack (React Native,
 * Owners can add/edit/delete/view foods
 * A food detail contains name, price, date, and image link. For example, Food = {name: 'Noodle', Origin: 'Vietnam', price: 10, date: new Date(), image: <uri>}
 * There is a live search bar to search foods by name
+
+
+
 2. Daily Notes
 * List of notes, but each item only contains header and date.
 * Owner can add/view notes
 * A note detail has a header, date, and comment. For example, note = {date: new Date(), header: 'Noodle', comment: 'Need to have more noodles next week'}
+
+
 3. Personal profile
 * This screen shows the owner's information (email, phone number, full name, password, address)
 * Owners can change their phone number, password, full name, and address on the screen, but not email.

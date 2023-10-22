@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const PRIVATE_KEY = "K-19-OCT-2023"
 require('dotenv').config();
 
+
 let db = null;
 let COLLECTION_NAME = 'users'
 
@@ -61,6 +62,15 @@ app.post('/login', async (req, res) => {
 
 })
 
+app.get('/users/images/:fileName', (req, res) => {
+    try {
+        res.status(200).download(`./images/${req.params.fileName}`)
+    } catch (error) {
+        
+    }
+    
+})
+
 function auth(req, res, next) {
     if (!req.headers.authorization) {
         res.send({ success: false, error: "Please provide Authorization" })
@@ -82,7 +92,7 @@ function auth(req, res, next) {
 }
 
 //route
-app.use(auth)
+app.use(auth) //comment for test
 
 //Get All Users
 app.get("/users", async (req, res) => {
@@ -162,6 +172,22 @@ app.delete("/users/:userId/foods/:foodId", async (req, res) => {
     }
 })
 
+//Get All notes from a specific user
+app.get("/users/:userId/notes", async (req, res) => {
+    try {
+
+        let ret = await db.collection(COLLECTION_NAME).findOne({
+            _id: new ObjectId(req.params.userId)
+        })
+        if (ret && ret.notes) {
+            res.status(200).send({ success: true, data: ret.notes });
+        } else {
+            res.status(200).send({ success: true, data: [] });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
 //Add new note
 app.post("/users/:userId/notes", async (req, res) => {
     try {
@@ -261,6 +287,23 @@ app.delete("/users/:userId/orders/:orderId", async (req, res) => {
         res.status(200).send({ success: true, data: ret });
     } catch (error) {
         res.status(500).send({ success: false, error: "Can't delete order: " + error.message });
+    }
+})
+
+//Update Profile 
+app.put("/users/:userId", async (req, res) => {
+    try {
+        const user = req.body;
+        const ret = await db.collection(COLLECTION_NAME).updateOne(
+            {
+                _id: new ObjectId(req.params.userId)
+            },
+            { $set: { name: user.name, phone: user.phone, email: user.email} }
+        );
+        res.status(200).send({ success: true, data: ret });
+
+    } catch (error) {
+        res.status(500).send({ success: false, error: "Can't update profile: " + error.message });
     }
 })
 

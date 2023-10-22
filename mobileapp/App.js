@@ -13,10 +13,9 @@ import { useFoodService } from '../mobileapp/network/useFoodService';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [globalState, setGlobalState] = useState({ userInfo: null, foodData: [] });
-  
- 
 
+  const [globalState, setGlobalState] = useState({ userInfo: null, foodData: [], DailyNotes: [] })
+  
   return (
     <GlobalContext.Provider value={{ globalState, setGlobalState }}>
       <Provider theme={theme}>
@@ -32,12 +31,15 @@ export default function App() {
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
             <Stack.Screen name="Dashboard" component={DashboardScreen} />
-            <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
+            <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
     </GlobalContext.Provider>
   );
+
+
 }
 
 const styles = StyleSheet.create({
