@@ -1,10 +1,11 @@
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AddFood from '../AddFood';
+import AddFood from '../screens/foods/AddFood';
 import EditFood from '../screens/foods/EditFood';
 import FoodDetail from '../screens/foods/FoodDetail';
 import FoodList from '../screens/foods/FoodList';
+
 
 const Stack = createNativeStackNavigator()
 export const FoodsStack = () => {

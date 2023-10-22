@@ -11,15 +11,22 @@ import {
 import { IconButton, MD3Colors, Divider } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { GlobalContext } from "../../../context/GlobalContext";
-import { fooddata } from './tempFoodData'
+import { useFoodService } from "../../../network/useFoodService";
+//import { fooddata } from './tempFoodData'
 export default function FoodList({ navigation }) {
-
+  const{getFood}=useFoodService();
   const { globalState, setGlobalState } = useContext(GlobalContext);
-
+console.log(globalState.userInfo)
   useEffect(() => {
-    setGlobalState({ ...globalState, foodData: fooddata });
+    const prepare=async()=>{
+      const ret= await getFood(globalState.userInfo._id,globalState.userInfo.token);
+      console.log(ret);
+    setGlobalState({ ...globalState, foodData: ret.data });
+    console.log(globalState);
+    }
+    prepare();
   }, []);
-
+  
   const renderFoodItem = ({ item }) => {
     console.log(item.image)
     return (<>
@@ -107,6 +114,7 @@ export default function FoodList({ navigation }) {
         />
       </View>
       <Divider />
+      {!globalState.foodData && <Text>No Foods Found</Text>}
       <FlatList
         data={globalState.foodData}
         keyExtractor={(item) => item._id}

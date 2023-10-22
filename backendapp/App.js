@@ -98,13 +98,13 @@ app.get("/users", async (req, res) => {
 app.get("/users/:userId/foods", async (req, res) => {
     try {
         let ret = await db.collection(COLLECTION_NAME).findOne({
-            _id: new Object(req.params.userId)
-        })
+            _id: new Object(req.params.userId)},
+            )
         console.log(ret)
         if (ret) {
-            res.status(200).send({ success: true, data: ret });
+            res.status(200).send({ success: true, data: ret.foods });
         }
-        res.status(200).send({ success: true, data: ret });
+        res.status(200).send({ success: true, data: ret.foods });
     } catch (error) {
         res.status(500).send({ success: false, error: `DB Error: ${error.message}` });
     }
@@ -114,7 +114,7 @@ app.get("/users/:userId/foods", async (req, res) => {
 app.post("/users/:userId/foods", async (req, res) => {
     try {
         const food = req.body;
-        food._id = new ObjectId();
+       food._id = new ObjectId();
         console.log(food)
         const ret = await db.collection(COLLECTION_NAME).updateOne(
             { _id: new ObjectId(req.params.userId) },
