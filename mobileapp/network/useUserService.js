@@ -1,5 +1,4 @@
 import { BASE_URL } from '@env'
-
 export const useUserService = () => {
 
     const getUsers = async () => {
@@ -46,68 +45,23 @@ export const useUserService = () => {
         }
     }
 
-    const createCourse = async (departmentId, course) => {
+    const updateProfile = async (token, userId, user) => {
         try {
-            const response = await fetch(`${BASE_URL}/departments/${departmentId}/courses`, {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    'Content-Type': "application/json"
-                },
-                body: JSON.stringify(course)
-            })
-            const json = await response.json()
-            return json;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    const updateCourse = async (departmentId, course) => {
-        try {
-            const response = await fetch(`${BASE_URL}/departments/${departmentId}/courses/${course._id}`, {
+            const response = await fetch(`${BASE_URL}/users/${userId}`, {
                 method: "PUT",
                 headers: {
                     Accept: "application/json",
-                    'Content-Type': "application/json"
+                    'Content-Type': "application/json",
+                    'Authorization': `Barer ${token}`
                 },
-                body: JSON.stringify(course)
+                body: JSON.stringify(user)
             })
             const json = await response.json()
-            return json;
+            return json
         } catch (error) {
-            throw error;
+
         }
     }
 
-    const deleteCourse = async (departmentId, courseId) => {
-        try {
-            const response = await fetch(`${BASE_URL}/departments/${departmentId}/courses/${courseId}`, {
-                method: "DELETE"
-            })
-            const json = await response.json();
-            return json;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    const addReview = async (departmentId, courseId, review) => {
-        try {
-            const response = await fetch(`${BASE_URL}/departments/${departmentId}/courses/${courseId}/reviews`, {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    'Content-Type': "application/json"
-                },
-                body: JSON.stringify(review)
-            })
-            const json = await response.json();
-            return json;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    return { getUsers, createUser, startLogin }
+    return { getUsers, createUser, startLogin, updateProfile }
 }
