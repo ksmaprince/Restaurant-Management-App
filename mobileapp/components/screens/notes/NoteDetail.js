@@ -25,7 +25,7 @@ export default function NoteDetail({ route }) {
             </View>
             <View style={styles.infoContainer}>
                 <Text style={styles.label}>Date:</Text>
-                <Text style={styles.value}>{formattedDate}</Text> {/* 使用格式化后的日期 */}
+                <Text style={styles.value}>{formattedDate}</Text>
             </View>
             <View style={styles.commentContainer}>
                 <Text style={styles.label}>Comment:</Text>
@@ -76,10 +76,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-        maxHeight: 200, // 设置最大高度
+        maxHeight: 200,
     },
     commentValue: {
         fontSize: 16,
-        multiline: true, // 允许多行输入
+        multiline: true,
     },
 });

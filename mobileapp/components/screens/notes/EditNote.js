@@ -12,8 +12,7 @@ const EditNote = ({ navigation, route }) => {
     const [commentHeight, setCommentHeight] = useState(40);
 
     const { _id, header, date, comment } = route.params.data;
-    const userId = route.params.userId;
-    console.log(route.params);
+    const userId = globalState.userInfo.id;
     useEffect(() => {
         setHeaderText(header);
         // setDateText(date);

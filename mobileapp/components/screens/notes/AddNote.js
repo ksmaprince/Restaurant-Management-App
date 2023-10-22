@@ -1,8 +1,8 @@
 import React, { useState, useContext, useRef } from 'react';
-import { View, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, TextInput, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import { createNote } from '../../../network/useNoteService';
-import { deleteNote, getUserNotes } from '../../../network/useNoteService';
+import { getUserNotes } from '../../../network/useNoteService';
 import { GlobalContext } from '../../../context/GlobalContext';
 
 const AddNote = ({ navigation }) => {
@@ -20,8 +20,7 @@ const AddNote = ({ navigation }) => {
         }
 
         const newNote = { header, date, comment };
-        const userId = "6534075de284f4b7d6093e81"; // for test
-        console.log('userId', userId);
+        const userId = globalState.userInfo.id;
         const res = await createNote(userId, newNote);
         if (res) {
             console.log("Note added successfully");

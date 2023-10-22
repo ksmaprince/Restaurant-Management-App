@@ -1,13 +1,10 @@
 import React, { useContext } from 'react';
-import { View, StyleSheet, FlatList, Platform } from 'react-native';
-import { IconButton, MD3Colors, Divider, Text } from "react-native-paper";
+import { View, StyleSheet, Platform } from 'react-native';
+import { IconButton, MD3Colors, Text } from "react-native-paper";
 import { deleteNote, getUserNotes } from '../../../network/useNoteService';
 import { GlobalContext } from '../../../context/GlobalContext';
 
 export default function ShowItem({ itemData, userId, navigation }) {
-    console.log('item', itemData);
-    console.log('userId', userId);
-    console.log('navigation', navigation);
     const { globalState, setGlobalState } = useContext(GlobalContext);
     const toDetail = (data) => {
         navigation.navigate("noteDetail", data);
