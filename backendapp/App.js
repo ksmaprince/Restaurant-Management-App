@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const PRIVATE_KEY = "K-19-OCT-2023"
 require('dotenv').config();
 
+
 let db = null;
 let COLLECTION_NAME = 'users'
 
@@ -59,6 +60,15 @@ app.post('/login', async (req, res) => {
         res.status(500).send({ success: false, error: `cannot login: ${error.message}` });
     }
 
+})
+
+app.get('/users/images/:fileName', (req, res) => {
+    try {
+        res.status(200).download(`./images/${req.params.fileName}`)
+    } catch (error) {
+        
+    }
+    
 })
 
 function auth(req, res, next) {
@@ -261,6 +271,23 @@ app.delete("/users/:userId/orders/:orderId", async (req, res) => {
         res.status(200).send({ success: true, data: ret });
     } catch (error) {
         res.status(500).send({ success: false, error: "Can't delete order: " + error.message });
+    }
+})
+
+//Update Profile 
+app.put("/users/:userId", async (req, res) => {
+    try {
+        const user = req.body;
+        const ret = await db.collection(COLLECTION_NAME).updateOne(
+            {
+                _id: new ObjectId(req.params.userId)
+            },
+            { $set: { name: user.name, phone: user.phone, email: user.email} }
+        );
+        res.status(200).send({ success: true, data: ret });
+
+    } catch (error) {
+        res.status(500).send({ success: false, error: "Can't update profile: " + error.message });
     }
 })
 

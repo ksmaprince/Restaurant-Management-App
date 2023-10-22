@@ -46,23 +46,26 @@ export default function LoginScreen({ navigation }) {
             routes: [{ name: 'Dashboard' }],
           })
         } else {
-          Alert.alert('Status', ret.error, [{
-            text: 'Okay',
-            onPress: () => { }
-          }])
+          // Alert.alert('Status', ret.error, [{
+          //   text: 'Okay',
+          //   onPress: () => { }
+          // }])
+          alert(ret.error)
         }
       } else {
-        Alert.alert('Status', 'Login unsuccessful!', [{
-          text: 'Okay',
-          onPress: () => { }
-        }])
+        // Alert.alert('Status', 'Login unsuccessful!', [{
+        //   text: 'Okay',
+        //   onPress: () => { }
+        // }])
+        alert('Login unsuccessful!')
       }
     } catch (error) {
       setLoading(false)
-      Alert.alert('Status', 'Login unsuccessful!', [{
-        text: 'Okay',
-        onPress: () => { }
-      }])
+      // Alert.alert('Status', 'Login unsuccessful!', [{
+      //   text: 'Okay',
+      //   onPress: () => { }
+      // }])
+      alert('Login unsuccessful!')
     }
 
 

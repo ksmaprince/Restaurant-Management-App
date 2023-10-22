@@ -1,43 +1,23 @@
-import Background from "../Background"
-import Logo from "../Logo"
-import Header from "../Header"
-import Paragraph from "../Paragraph"
-import Button from "../Button"
-import { useContext } from "react"
-import { GlobalContext } from "../../context/GlobalContext"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { MyProfile } from '../screens/profile/MyProfile';
+import { UpdateProfile } from '../screens/profile/UpdateProfile';
 
-export const ProfileStack = ({navigation}) => {
-    const {globalState, setGlobalState} = useContext(GlobalContext)
-    const logoutPress = async () => {
-        try {
-            await AsyncStorage.removeItem("USER")
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'LoginScreen' }],
-            })
-            setGlobalState({...globalState, userInfo:null})
-        } catch (error) {
-            
-        }
-    }
+const Stack = createNativeStackNavigator()
+
+export const ProfileStack = () => {
     return (
-        <Background>
-            <Logo />
-            <Header>{globalState.userInfo.name} </Header>
-            <Paragraph>
-                Phone: {globalState.userInfo.phone}
-            </Paragraph>
-            <Paragraph>
-                Email: {globalState.userInfo.email}
-            </Paragraph>
-            <Button
-                mode="outlined"
-                onPress={logoutPress}
-            >
-                Logout
-            </Button>
+        <Stack.Navigator initialRouteName="myProfile">
+            <Stack.Screen
+                name="myProfile"
+                component={MyProfile}
+                options={{ title: "My Profile", headerShown: false }}
+            />
+            <Stack.Screen
+                name="updateProfile"
+                component={UpdateProfile}
+                options={{ title: "Update Profile", headerShown: true }}
+            />
 
-        </Background>
+        </Stack.Navigator>
     )
 }

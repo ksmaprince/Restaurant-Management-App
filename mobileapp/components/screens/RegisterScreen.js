@@ -44,34 +44,38 @@ export default function RegisterScreen({ navigation }) {
       setLoading(false)
       if (ret) {
         if (ret.success) {
-          Alert.alert('Status', 'User created successfully', [{
-            text: 'Okay',
-            onPress: () => {
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'LoginScreen' }],
-              })
-            }
-          }])
+          // Alert.alert('Status', 'User created successfully', [{
+          //   text: 'Okay',
+          //   onPress: () => {
+          //     navigation.reset({
+          //       index: 0,
+          //       routes: [{ name: 'LoginScreen' }],
+          //     })
+          //   }
+          // }])
+          alert('User created successfully')
         } else {
-          Alert.alert('Status', ret.error, [{
-            text: 'Okay',
-            onPress: () => { }
-          }])
+          // Alert.alert('Status', ret.error, [{
+          //   text: 'Okay',
+          //   onPress: () => { }
+          // }])
+          alert(ret.error)
         }
       }
       else {
-        Alert.alert('Status', 'Create user is unsuccessful!', [{
-          text: 'Okay',
-          onPress: () => { }
-        }])
+        // Alert.alert('Status', 'Create user is unsuccessful!', [{
+        //   text: 'Okay',
+        //   onPress: () => { }
+        // }])
+        alert('Create user unsuccessful!')
       }
     } catch (error) {
       setLoading(false)
-      Alert.alert('Status', 'Create user is unsuccessful!', [{
-        text: 'Okay',
-        onPress: () => { }
-      }])
+      // Alert.alert('Status', 'Create user is unsuccessful!', [{
+      //   text: 'Okay',
+      //   onPress: () => { }
+      // }])
+      alert('Create user unsuccessful!')
     }
 
   }
