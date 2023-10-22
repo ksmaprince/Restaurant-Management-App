@@ -82,7 +82,7 @@ function auth(req, res, next) {
 }
 
 //route
-// app.use(auth) //comment for test
+app.use(auth) //comment for test
 
 //Get All Users
 app.get("/users", async (req, res) => {

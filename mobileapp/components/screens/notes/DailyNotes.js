@@ -1,22 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, Platform } from 'react-native';
-import { Text, FAB } from 'react-native-paper'; // Import FAB (Floating Action Button)
+import { FAB } from 'react-native-paper'; // Import FAB (Floating Action Button)
 import { GlobalContext } from "../../../context/GlobalContext";
-import { createStackNavigator } from '@react-navigation/stack';
 import { getUserNotes } from '../../../network/useNoteService';
-import AddNote from './AddNote';
-import { useFocusEffect } from '@react-navigation/native';
 import ShowItem from './NodeItem';
-const Stack = createStackNavigator();
 
 export default function DailyNotes({ navigation }) {
   const { globalState, setGlobalState } = useContext(GlobalContext);
   const [dailyNotes, setDailyData] = useState({});
-  const userId = "6534075de284f4b7d6093e81"; // for test
-
+  const userId = globalState.userInfo.id;
   const fetchNoteData = async () => {
     const noteData = await getUserNotes(userId);
-    console.log('noteData', noteData);
     return noteData;
   };
 
