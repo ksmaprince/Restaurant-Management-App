@@ -107,19 +107,19 @@ app.get("/users", async (req, res) => {
 //Get All Food from a specific user
 app.get("/users/:userId/foods", async (req, res) => {
     try {
+
         let ret = await db.collection(COLLECTION_NAME).findOne({
-            _id: new Object(req.params.userId)},
-            )
-        console.log(ret)
-        if (ret) {
+            _id: new ObjectId(req.params.userId)
+        })
+        if (ret && ret.foods) {
             res.status(200).send({ success: true, data: ret.foods });
+        } else {
+            res.status(200).send({ success: true, data: [] });
         }
-        res.status(200).send({ success: true, data: ret.foods });
     } catch (error) {
-        res.status(500).send({ success: false, error: `DB Error: ${error.message}` });
+        console.log(error);
     }
 })
-
 //Add new food
 app.post("/users/:userId/foods", async (req, res) => {
     try {
@@ -137,7 +137,7 @@ app.post("/users/:userId/foods", async (req, res) => {
 });
 
 //Update a food
-app.put("/users/:userId/food/:foodId", async (req, res) => {
+app.put("/users/:userId/foods/:foodId", async (req, res) => {
     try {
         const food = req.body;
         food._id = new ObjectId(req.params.foodId)
@@ -151,7 +151,7 @@ app.put("/users/:userId/food/:foodId", async (req, res) => {
         res.status(200).send({ success: true, data: ret });
 
     } catch (error) {
-        res.status(500).send({ success: false, error: "Can't update food: " + error.message });
+        res.status(500).send({ success: false, error: "Can't update note: " + error.message });
     }
 })
 
@@ -163,7 +163,7 @@ app.delete("/users/:userId/foods/:foodId", async (req, res) => {
                 _id: new ObjectId(req.params.userId)
             },
             {
-                $pull: { foods: { _id: new ObjectId(req.params.userId) } }
+                $pull: { foods: { _id: new ObjectId(req.params.foodId) } }
             }
         );
         res.status(200).send({ success: true, data: ret });

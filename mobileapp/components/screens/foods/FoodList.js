@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect,useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,19 +12,30 @@ import { IconButton, MD3Colors, Divider } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { GlobalContext } from "../../../context/GlobalContext";
 import { useFoodService } from "../../../network/useFoodService";
+
 //import { fooddata } from './tempFoodData'
 export default function FoodList({ navigation }) {
-  const{getFood}=useFoodService();
   const { globalState, setGlobalState } = useContext(GlobalContext);
-console.log(globalState.userInfo)
+  const {getFoods}=useFoodService();
+  const [foodData, setFoodData] = useState([]);
+  const userId = globalState.userInfo.id;
+  const [searchText,setSearhText]=useState("");
+  const fetchFoodData = async () => {
+    const fdata = await getFoods(globalState.userInfo.token,userId);
+    return fdata;
+  };
+
+  const fetchData = async () => {
+    const fdata = await fetchFoodData();
+    setGlobalState({ ...globalState, foodData: fdata.data });
+  };
+
   useEffect(() => {
-    const prepare=async()=>{
-      const ret= await getFood(globalState.userInfo._id,globalState.userInfo.token);
-      console.log(ret);
-    setGlobalState({ ...globalState, foodData: ret.data });
-    console.log(globalState);
-    }
-    prepare();
+    setFoodData(globalState.foodData);
+  }, [foodData]);
+
+  useEffect(() => {
+    fetchData();
   }, []);
   
   const renderFoodItem = ({ item }) => {
@@ -59,9 +70,10 @@ console.log(globalState.userInfo)
               icon="delete-circle"
               iconColor={MD3Colors.error50}
               size={25}
-              onPress={handleDeleteFood}
+              onPress={()=>handleDeleteFood(item)}
             />
           </View>
+         
         </View>
       </View>
       <Divider style={{ color: 'red' }} />
@@ -77,7 +89,41 @@ console.log(globalState.userInfo)
   const handleEditFood = (item) => {
     navigation.navigate("editfood", { item });
   };
-  const handleDeleteFood = () => { };
+  const handleDeleteFood =async (item) => {
+    let ans=confirm("Are you sure to delete?")
+    if(ans){
+    const { deleteFood } = useFoodService();
+    const success = await deleteFood(globalState.userInfo.token, globalState.userInfo.id, item._id);
+    if (success) {
+             refreshFoodStack();
+    }
+  }
+   };
+   //refesh the foodlist stack
+  const refreshFoodStack = () => {
+    navigation.reset({
+      index: 0, // Reset to the first screen in the stack
+      routes: [{ name: 'foodlist' }], // Specify the stack to reset
+    });
+  };
+  const handleAsc=()=>{
+    const sortedData = [...globalState.foodData]; // 
+    sortedData.sort((a, b) => a.name.localeCompare(b.name)); 
+  
+    setGlobalState({ ...globalState, foodData: sortedData })
+  }
+  const handleDesc=()=>{
+    const sortedData = [...globalState.foodData]; // 
+    sortedData.sort((a, b) => b.name.localeCompare(a.name)); 
+  
+    setGlobalState({ ...globalState, foodData: sortedData })
+  }
+  const handleSearchText=(text)=>{
+    setSearhText(text);
+     }
+    
+
+  
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -97,6 +143,8 @@ console.log(globalState.userInfo)
             paddingHorizontal: 10,
             paddingLeft: 40,
           }}
+          onChangeText={handleSearchText}
+          value={searchText}
         />
         <Icon
           name="search"
@@ -104,6 +152,23 @@ console.log(globalState.userInfo)
           color="#333"
           style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}
         />
+         <IconButton
+          icon="sort-alphabetical-ascending"
+          iconColor={MD3Colors.error50}
+          size={30}
+          style={{ position: "absolute", top: -10, right: 40, zIndex: 1 }}
+          onPress={handleAsc}
+        />
+         <IconButton
+          icon="sort-alphabetical-descending"
+          iconColor={MD3Colors.error50}
+          size={30}
+          style={{ position: "absolute", top: -10, right:5, zIndex: 1 }}
+          onPress={handleDesc}
+        />
+       
+         
+        
       </View>
       <View style={styles.roundButton}>
         <IconButton

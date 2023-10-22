@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { StyleSheet, View, TextInput, Alert } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { StyleSheet, View, TextInput, Alert,Image } from "react-native";
 import { IconButton, Button, ActivityIndicator } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
@@ -10,6 +10,7 @@ import { useFoodService } from "../../../network/useFoodService";
 import { uriValidator } from "../../../helpers/uriValidator";
 import alert from '../../../helpers/alert'
 import { getCurrentDate } from "../../../helpers/getDateString";
+import * as ImagePicker from 'expo-image-picker';
 export default function AddFood({ navigation }) {
   const { globalState } = useContext(GlobalContext);
   const [name, setName] = useState('');
@@ -19,6 +20,8 @@ export default function AddFood({ navigation }) {
   const [imageUri, setImageUri] = useState('');
   const [saving, setSaving] = useState(false);
   const { createFood } = useFoodService();
+  
+ 
 
   const handleAddFood = async () => {
     if (!name || !origin || !description || !price || !imageUri) {
@@ -47,8 +50,7 @@ export default function AddFood({ navigation }) {
         image: { uri: imageUri },
         date: getCurrentDate(),
       };
-//console.log(food);
-//console.log(globalState.userInfo);
+
       const response = await createFood(
         globalState.userInfo.id,
         globalState.userInfo.token,
@@ -58,7 +60,8 @@ export default function AddFood({ navigation }) {
       setSaving(false);
 
       if (response.success) {
-        alert("Success", "Food created!")
+       // alert("Success", "Food created!")
+        refreshFoodStack();
           
       } else {
         alert("Error", response.error);
@@ -68,7 +71,13 @@ export default function AddFood({ navigation }) {
       alert("Error", "Unable to process by Server!");
     }
   };
-
+  //refesh the foodlist stack
+  const refreshFoodStack = () => {
+    navigation.reset({
+      index: 0, // Reset to the first screen in the stack
+      routes: [{ name: 'foodlist' }], // Specify the stack to reset
+    });
+  };
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
@@ -124,9 +133,13 @@ export default function AddFood({ navigation }) {
           value={imageUri}
           onChangeText={(text) => setImageUri(text)}
         />
+        
       </View>
 
-      {saving && <ActivityIndicator size="small" />}
+    
+        
+      
+      
       <View style={{ width: "100%", position: "absolute", bottom: 10 }}>
         <Button
           icon="floppy"
