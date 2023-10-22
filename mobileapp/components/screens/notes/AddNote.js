@@ -21,10 +21,10 @@ const AddNote = ({ navigation }) => {
 
         const newNote = { header, date, comment };
         const userId = globalState.userInfo.id;
-        const res = await createNote(userId, newNote);
+        const res = await createNote(globalState.userInfo.token, userId, newNote);
         if (res) {
             console.log("Note added successfully");
-            const noteData = await getUserNotes(userId);
+            const noteData = await getUserNotes(globalState.userInfo.token,userId);
             setGlobalState({ ...globalState, DailyNotes: noteData.data });
             navigation.navigate('dailyNotes');
         }

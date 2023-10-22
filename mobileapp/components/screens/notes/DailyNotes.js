@@ -10,7 +10,7 @@ export default function DailyNotes({ navigation }) {
   const [dailyNotes, setDailyData] = useState({});
   const userId = globalState.userInfo.id;
   const fetchNoteData = async () => {
-    const noteData = await getUserNotes(userId);
+    const noteData = await getUserNotes(globalState.userInfo.token,userId);
     return noteData;
   };
 

@@ -2,10 +2,16 @@ import { BASE_URL } from '@env'
 import { useId } from 'react'
 
 
-export const getUserNotes = async (userId) => {
+export const getUserNotes = async (token, userId) => {
     try {
         console.log(userId);
-        const response = await fetch(`${BASE_URL}/users/${userId}/notes`);
+        const response = await fetch(`${BASE_URL}/users/${userId}/notes`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
         if (response.status === 200) {
             console.log('res', response);
             const data = await response.json();
@@ -19,16 +25,18 @@ export const getUserNotes = async (userId) => {
     }
 };
 
-export const createNote = async (userId, note) => {
+export const createNote = async (token, userId, note) => {
     try {
         console.log('aaaaaaaaaaaa', userId)
         const response = await fetch(`${BASE_URL}/users/${userId}/notes`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
-                'Content-Type': "application/json"
+                'Content-Type': "application/json",
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(note)
+            body: JSON.stringify(note),
+
         })
         const json = await response.json()
         return json;
@@ -37,15 +45,16 @@ export const createNote = async (userId, note) => {
     }
 }
 
-export const updateNote = async (userId, note) => {
+export const updateNote = async (token, userId, note) => {
     try {
         const response = await fetch(`${BASE_URL}/users/${userId}/notes/${note._id}`, {
             method: "PUT",
             headers: {
                 Accept: "application/json",
-                'Content-Type': "application/json"
+                'Content-Type': "application/json",
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(note)
+            body: JSON.stringify(note),
         })
         const json = await response.json()
         return json;
@@ -54,10 +63,15 @@ export const updateNote = async (userId, note) => {
     }
 }
 
-export const deleteNote = async (userId, noteId) => {
+export const deleteNote = async (token, userId, noteId) => {
     try {
         const response = await fetch(`${BASE_URL}/users/${userId}/notes/${noteId}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: {
+                Accept: "application/json",
+                'Content-Type': "application/json",
+                'Authorization': `Bearer ${token}`
+            },
         })
         const json = await response.json();
         return json;

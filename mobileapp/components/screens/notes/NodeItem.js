@@ -9,12 +9,12 @@ export default function ShowItem({ itemData, userId, navigation }) {
     const toDetail = (data) => {
         navigation.navigate("noteDetail", data);
     }
-git 
+
     const toDeleteNote = async () => {
-        const success = await deleteNote(userId, itemData._id);
+        const success = await deleteNote(globalState.userInfo.token, userId, itemData._id);
         if (success) {
             console.log("Course deleted successfully");
-            const noteData = await getUserNotes(userId);
+            const noteData = await getUserNotes(globalState.userInfo.token, userId);
             setGlobalState({ ...globalState, DailyNotes: noteData.data });
             navigation.navigate('dailyNotes');
         }

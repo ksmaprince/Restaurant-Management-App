@@ -30,10 +30,10 @@ const EditNote = ({ navigation, route }) => {
     const handleUpdateNote = async () => {
         const time = new Date();
         const updatedNote = { _id, header: headerText, date: time, comment: commentText };
-        const res = await updateNote(userId, updatedNote);
+        const res = await updateNote(globalState.userInfo.token, userId, updatedNote);
         if (res) {
             console.log("Note updated successfully");
-            const noteData = await getUserNotes(userId);
+            const noteData = await getUserNotes(globalState.userInfo.token,userId);
             setGlobalState({ ...globalState, DailyNotes: noteData.data });
             navigation.navigate('dailyNotes');
         }
