@@ -123,7 +123,7 @@ export default function FoodList({ navigation }) {
      }
     
 
-  }
+  
   return (
     <SafeAreaView style={styles.container}>
       <View
