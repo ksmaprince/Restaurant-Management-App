@@ -1,11 +1,13 @@
 import { StyleSheet, Platform, Pressable } from 'react-native';
 import { Card, IconButton, MD3Colors, Text } from "react-native-paper";
 import { deleteNote, getUserNotes } from '../../../network/useNoteService';
-
+import { GlobalContext } from '../../../context/GlobalContext';
+import React, { useContext } from 'react';
 export default function ShowItem({ itemData, userId, navigation }) {
-    // const toDetail = (data) => {
-    //     navigation.navigate("noteDetail", data);
-    // }
+    const { globalState, setGlobalState } = useContext(GlobalContext);
+    const toDetail = (data) => {
+        navigation.navigate("noteDetail", data);
+    }
 
     const toDeleteNote = async () => {
         const success = await deleteNote(globalState.userInfo.token, userId, itemData._id);
@@ -55,15 +57,15 @@ export default function ShowItem({ itemData, userId, navigation }) {
             <Card.Content>
                 <Pressable onPress={toEdit}>
                     <Text variant='titleLarge'>{itemData.header}</Text>
-                    <Text variant='bodyMedium'>{itemData.comment}</Text>
+                    {/* <Text variant='bodyMedium'>{itemData.comment}</Text> */}
                     <Text variant='bodySmall'>{formattedDate}</Text>
                 </Pressable>
             </Card.Content>
             <Card.Actions>
                 <IconButton
-                    icon="delete"
+                    icon="delete-circle"
                     iconColor={MD3Colors.error50}
-                    size={20}
+                    size={25}
                     onPress={toDelete}
                 />
             </Card.Actions>
@@ -74,7 +76,8 @@ export default function ShowItem({ itemData, userId, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: 5
+        margin: 5,
+        width: 300
     },
     itemContainer: {
         flexDirection: 'row',
