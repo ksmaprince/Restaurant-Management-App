@@ -20,6 +20,8 @@ export default function FoodList({ navigation }) {
   const [foodData, setFoodData] = useState([]);
   const userId = globalState.userInfo.id;
   const [searchText,setSearhText]=useState("");
+  //const [filteredData,setFilteredData]=useState();
+  
   const fetchFoodData = async () => {
     const fdata = await getFoods(globalState.userInfo.token,userId);
     return fdata;
@@ -28,10 +30,12 @@ export default function FoodList({ navigation }) {
   const fetchData = async () => {
     const fdata = await fetchFoodData();
     setGlobalState({ ...globalState, foodData: fdata.data });
+    setFoodData([...globalState.foodData])
   };
 
   useEffect(() => {
     setFoodData(globalState.foodData);
+   
   }, [foodData]);
 
   useEffect(() => {
@@ -39,7 +43,7 @@ export default function FoodList({ navigation }) {
   }, []);
   
   const renderFoodItem = ({ item }) => {
-    console.log(item.image)
+    //console.log(item.image)
     return (<>
       <View style={styles.row}>
         <View style={[styles.column, { width: "120", padding: 20 }]}>
@@ -118,10 +122,12 @@ export default function FoodList({ navigation }) {
   
     setGlobalState({ ...globalState, foodData: sortedData })
   }
-  const handleSearchText=(text)=>{
-    setSearhText(text);
-     }
+  const handleSearchText= (text)=>{
     
+     
+    }
+  
+
 
   
   return (
