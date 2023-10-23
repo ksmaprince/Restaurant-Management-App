@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, TextInput, Alert, Image } from "react-native";
-import { IconButton, Button, ActivityIndicator } from "react-native-paper";
+import { IconButton, Button, ActivityIndicator, Avatar } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -11,6 +11,7 @@ import { uriValidator } from "../../../helpers/uriValidator";
 import alert from '../../../helpers/alert'
 import { getCurrentDate } from "../../../helpers/getDateString";
 import * as ImagePicker from 'expo-image-picker';
+import { useFirebase } from "../../../network/useFirebase"
 
 export default function EditFood({ navigation,route }) {
   
@@ -23,10 +24,10 @@ export default function EditFood({ navigation,route }) {
   const [price, setPrice] = useState(route.params.item.price);
   const [imageUri, setImageUri] = useState(route.params.item.image.uri);
   
-  const [capturedImage, setCapturedImage] = useState('');
-  const [imageCaptured, setImageCaptured] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const { uploadImage } = useFirebase()
   
-  const [saving, setSaving] = useState(false);
+  
  
   const { updateFood } = useFoodService();
   console.log(route.params.item)
@@ -47,7 +48,7 @@ export default function EditFood({ navigation,route }) {
     }
 
     try {
-      setSaving(true);
+      
 
       const food = {
         _id,
@@ -66,7 +67,7 @@ export default function EditFood({ navigation,route }) {
         food
       );
 
-      setSaving(false);
+      
 
       if (response.success) {
       //  alert("Success", "Food updated!");
@@ -78,30 +79,12 @@ export default function EditFood({ navigation,route }) {
         alert("Error", response.error);
       }
     } catch (error) {
-      setSaving(false);
+      
       alert("Error", error);
     }
   };
 
-  const captureImage = async () => {
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (permission.status !== 'granted') {
-      alert('Error', 'Camera permission is required to capture an image.');
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-
-    if (!result.cancelled) {
-      setCapturedImage(result.uri);
-      setImageCaptured(true);
-      setImageUri(result.uri); // Fill the Image URI input with the captured image URI
-    }
-  };
+  
   //refesh the foodlist stack
   const refreshFoodStack = () => {
     navigation.reset({
@@ -109,6 +92,41 @@ export default function EditFood({ navigation,route }) {
       routes: [{ name: 'foodlist' }], // Specify the stack to reset
     });
   };
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        aspect: [4, 3],
+        quality: 1,
+    });
+    if (!result.canceled) {
+        try {
+            setLoading(true)
+            const response = await fetch(result.assets[0].uri);
+            const blob = await response.blob();
+
+            //Upload to Cloud Storage
+            const imageRet = await uploadImage(globalState.userInfo.id, blob)
+            if(imageRet.success)
+            {
+              setImageUri(imageRet.imageUrl);
+            }
+
+            //Update image url to current user
+           // const ret = await updateProfileImage(globalState.userInfo.token, globalState.userInfo.id, image)
+           
+            
+           // if (ret && ret.success) {
+                setLoading(false)
+               // await AsyncStorage.setItem("USER", JSON.stringify(ret.data))
+               // setGlobalState({ ...globalState, userInfo: ret.data})
+               // alert(imageRet.message)
+           // }
+        } catch (error) {
+            alert(error.message)
+        }
+    }
+};
+
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
@@ -164,19 +182,21 @@ export default function EditFood({ navigation,route }) {
           value={imageUri}
           onChangeText={(text) => setImageUri(text)}
         />
-        <IconButton
-          icon="camera"
-          size={24}
-          color="black"
-          onPress={captureImage}
-        />
+        
       </View>
-
-      {imageCaptured && (
-        <View style={styles.imagePreview}>
-          <Image source={{ uri: capturedImage }} style={styles.previewImage} />
-        </View>
-      )}
+      {loading && <ActivityIndicator size='small' />}
+      <View  style={{ justifyContent:'center',alignItems:'center',width:'100%',marginTop:20}}>
+      {imageUri===''?<Avatar.Image source={require("../../../assets/foodPlaceholder.png")} size={250} />
+     :<Avatar.Image source={{uri:imageUri}} size={250} />
+    }
+      
+      </View>
+      <View  style={{ justifyContent:'center',alignItems:'center',width:'100%',marginTop:20}}>
+      <Button icon="camera" mode="outlined" onPress={pickImage}>
+                Change Image
+            </Button>
+      </View>
+     
 
       <View style={{ width: "100%", position: "absolute", bottom: 10 }}>
         <Button

@@ -12,13 +12,22 @@ import { IconButton, MD3Colors, Divider } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { GlobalContext } from "../../../context/GlobalContext";
 import { useFoodService } from "../../../network/useFoodService";
-
+import confirmationBox from '../../../helpers/confirmationBox';
 export default function FoodList({ navigation }) {
   const { globalState, setGlobalState } = useContext(GlobalContext);
   const { getFoods } = useFoodService();
   const [foodData, setFoodData] = useState([]);
   const userId = globalState.userInfo.id;
   const [searchText, setSearchText] = useState("");
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
+
+  //function to show delete confirmation box
+  // Function to show the delete confirmation modal
+  const showDeleteConfirmation = () => {
+    setIsDeleteConfirmationVisible(true);
+  };
+   // Function to handle confirm delete
+  
 
   //load data from database with async and await
   const fetchFoodData = async () => {
@@ -51,7 +60,7 @@ export default function FoodList({ navigation }) {
           <View style={[styles.column, { width: "120", padding: 20 }]}>
             <Image
               source={{ uri: item.image.uri }}
-              style={{ width: 100, height: 100 }}
+              style={{ width: 100, height: 100,borderRadius:50,resizeMode:'cover' }}
             />
           </View>
           <View style={[styles.column, { paddingTop: 20 }]}>
@@ -117,6 +126,19 @@ export default function FoodList({ navigation }) {
         refreshFoodStack();
       }
     }
+    const handleConfirmDelete = () => {
+      // Perform the delete action here
+      // ...
+  
+      // Close the confirmation modal
+      setIsDeleteConfirmationVisible(false);
+    };
+  
+    // Function to handle cancel delete
+    const handleCancelDelete = () => {
+      // Close the confirmation modal
+      setIsDeleteConfirmationVisible(false);
+    };
   };
 
   //refesh the foodlist stack
