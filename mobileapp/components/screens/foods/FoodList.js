@@ -1,4 +1,4 @@
-import { useContext, useEffect,useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,123 +13,149 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { GlobalContext } from "../../../context/GlobalContext";
 import { useFoodService } from "../../../network/useFoodService";
 
-//import { fooddata } from './tempFoodData'
 export default function FoodList({ navigation }) {
   const { globalState, setGlobalState } = useContext(GlobalContext);
-  const {getFoods}=useFoodService();
+  const { getFoods } = useFoodService();
   const [foodData, setFoodData] = useState([]);
   const userId = globalState.userInfo.id;
-  const [searchText,setSearhText]=useState("");
-  //const [filteredData,setFilteredData]=useState();
-  
+  const [searchText, setSearchText] = useState("");
+
+  //load data from database with async and await
   const fetchFoodData = async () => {
-    const fdata = await getFoods(globalState.userInfo.token,userId);
+    const fdata = await getFoods(globalState.userInfo.token, userId);
     return fdata;
   };
 
+  //retrive data form fectFoodData
   const fetchData = async () => {
     const fdata = await fetchFoodData();
     setGlobalState({ ...globalState, foodData: fdata.data });
-    setFoodData([...globalState.foodData])
+    setFoodData([...globalState.foodData]);
   };
 
+  //call didUpdate method every time foodData property of globalState Change
   useEffect(() => {
     setFoodData(globalState.foodData);
-   
-  }, [foodData]);
+  }, [globalState.foodData]);
 
+  //call data load for one time ( like Form Load Event-i.e only once)
   useEffect(() => {
     fetchData();
   }, []);
-  
-  const renderFoodItem = ({ item }) => {
-    //console.log(item.image)
-    return (<>
-      <View style={styles.row}>
-        <View style={[styles.column, { width: "120", padding: 20 }]}>
-          <Image
-            source={{ uri: item.image.uri }}
-            style={{ width: 100, height: 100 }}
-          />
-        </View>
-        <View style={[styles.column, { paddingTop: 20 }]}>
-          <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
-          <Text>Origin:{item.origin}</Text>
-          <Text>Price: ${item.price} </Text>
-          <View style={styles.row}>
-            <IconButton
-              icon="format-list-bulleted-triangle"
-              iconColor={MD3Colors.error50}
-              size={25}
-              onPress={() => handleDetailFood(item)}
-            />
-            <IconButton
-              icon="book-edit"
-              iconColor={MD3Colors.error50}
-              size={25}
-              onPress={() => handleEditFood(item)}
-            />
 
-            <IconButton
-              icon="delete-circle"
-              iconColor={MD3Colors.error50}
-              size={25}
-              onPress={()=>handleDeleteFood(item)}
+  //display each food item in card
+  const renderFoodItem = ({ item }) => {
+    return (
+      <>
+        <View style={styles.row}>
+          <View style={[styles.column, { width: "120", padding: 20 }]}>
+            <Image
+              source={{ uri: item.image.uri }}
+              style={{ width: 100, height: 100 }}
             />
           </View>
-         
+          <View style={[styles.column, { paddingTop: 20 }]}>
+            <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
+            <Text>Origin:{item.origin}</Text>
+            <Text>Price: ${item.price} </Text>
+            <View style={styles.row}>
+              <IconButton
+                icon="format-list-bulleted-triangle"
+                iconColor={MD3Colors.error50}
+                size={25}
+                onPress={() => handleDetailFood(item)}
+              />
+              <IconButton
+                icon="book-edit"
+                iconColor={MD3Colors.error50}
+                size={25}
+                onPress={() => handleEditFood(item)}
+              />
+
+              <IconButton
+                icon="delete-circle"
+                iconColor={MD3Colors.error50}
+                size={25}
+                onPress={() => handleDeleteFood(item)}
+              />
+            </View>
+          </View>
         </View>
-      </View>
-      <Divider style={{ color: 'red' }} />
-    </>)
-  }
+        <Divider style={{ color: "red" }} />
+      </>
+    );
+  };
+
+  //When plus  button icon click navigate to addfood screen
   const handleAddFood = () => {
     navigation.navigate("addfood");
   };
+
+  //When Detail icon button click navigate to food detail 
+  //screen and pass current food item
   const handleDetailFood = (item) => {
     navigation.navigate("fooddetail", { item });
   };
 
+  //When Edit icon button click navigate to editfood 
+  //screen and pass current food item
   const handleEditFood = (item) => {
     navigation.navigate("editfood", { item });
   };
-  const handleDeleteFood =async (item) => {
-    let ans=confirm("Are you sure to delete?")
-    if(ans){
-    const { deleteFood } = useFoodService();
-    const success = await deleteFood(globalState.userInfo.token, globalState.userInfo.id, item._id);
-    if (success) {
-             refreshFoodStack();
+
+  //When delete icon button click-> ask confirmation and delete
+  const handleDeleteFood = async (item) => {
+    let ans = confirm("Are you sure to delete?");
+    if (ans) {
+      const { deleteFood } = useFoodService();
+      const success = await deleteFood(
+        globalState.userInfo.token,
+        globalState.userInfo.id,
+        item._id
+      );
+      if (success) {
+        refreshFoodStack();
+      }
     }
-  }
-   };
-   //refesh the foodlist stack
+  };
+
+  //refesh the foodlist stack
   const refreshFoodStack = () => {
     navigation.reset({
       index: 0, // Reset to the first screen in the stack
-      routes: [{ name: 'foodlist' }], // Specify the stack to reset
+      routes: [{ name: "foodlist" }], // Specify the stack to reset
     });
   };
-  const handleAsc=()=>{
-    const sortedData = [...globalState.foodData]; // 
-    sortedData.sort((a, b) => a.name.localeCompare(b.name)); 
-  
-    setGlobalState({ ...globalState, foodData: sortedData })
-  }
-  const handleDesc=()=>{
-    const sortedData = [...globalState.foodData]; // 
-    sortedData.sort((a, b) => b.name.localeCompare(a.name)); 
-  
-    setGlobalState({ ...globalState, foodData: sortedData })
-  }
-  const handleSearchText= (text)=>{
-    
-     
+
+  //sort Ascending order
+  const handleAsc = () => {
+    const sortedData = [...globalState.foodData]; //
+    sortedData.sort((a, b) => a.name.localeCompare(b.name));
+    setGlobalState({ ...globalState, foodData: sortedData });
+  };
+
+  //sort Decending order
+  const handleDesc = () => {
+    const sortedData = [...globalState.foodData]; //
+    sortedData.sort((a, b) => b.name.localeCompare(a.name));
+    setGlobalState({ ...globalState, foodData: sortedData });
+  };
+
+  //filter according to search text change
+  const handleSearchText = (text) => {
+    setSearchText(text);
+    if (text !== "") {
+      const newList = globalState.foodData.filter(
+        (food) =>
+          food.name.toLowerCase().includes(text.toLowerCase()) ||
+          food.origin.toLowerCase().includes(text.toLowerCase())
+      );
+      setFoodData(newList);
+    } else {
+      setFoodData(globalState.foodData);
     }
-  
+  };
 
-
-  
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -158,23 +184,20 @@ export default function FoodList({ navigation }) {
           color="#333"
           style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}
         />
-         <IconButton
+        <IconButton
           icon="sort-alphabetical-ascending"
           iconColor={MD3Colors.error50}
           size={30}
           style={{ position: "absolute", top: -10, right: 40, zIndex: 1 }}
           onPress={handleAsc}
         />
-         <IconButton
+        <IconButton
           icon="sort-alphabetical-descending"
           iconColor={MD3Colors.error50}
           size={30}
-          style={{ position: "absolute", top: -10, right:5, zIndex: 1 }}
+          style={{ position: "absolute", top: -10, right: 5, zIndex: 1 }}
           onPress={handleDesc}
         />
-       
-         
-        
       </View>
       <View style={styles.roundButton}>
         <IconButton
@@ -187,10 +210,10 @@ export default function FoodList({ navigation }) {
       <Divider />
       {!globalState.foodData && <Text>No Foods Found</Text>}
       <FlatList
-        data={globalState.foodData}
+        data={foodData}
         keyExtractor={(item) => item._id}
         renderItem={renderFoodItem}
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
       />
     </SafeAreaView>
   );
@@ -222,7 +245,7 @@ const styles = StyleSheet.create({
     width: 50,
     borderRadius: 30,
     justifyContent: "center",
-    alignltems: "center",
+    alignItems: "center",
     overflow: "hidden",
   },
   plustext: {
