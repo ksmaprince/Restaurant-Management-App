@@ -11,6 +11,7 @@ import { uriValidator } from "../../../helpers/uriValidator";
 import alert from '../../../helpers/alert'
 import { getCurrentDate } from "../../../helpers/getDateString";
 import * as ImagePicker from 'expo-image-picker';
+import Background from "../../Background";
 export default function AddFood({ navigation }) {
   const { globalState } = useContext(GlobalContext);
   const [name, setName] = useState('');
@@ -79,6 +80,7 @@ export default function AddFood({ navigation }) {
     });
   };
   return (
+    <Background>
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <Ionicons name="fast-food" size={24} color="black" />
@@ -151,6 +153,7 @@ export default function AddFood({ navigation }) {
         </Button>
       </View>
     </View>
+    </Background>
   );
 }
 

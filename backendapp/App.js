@@ -51,7 +51,7 @@ app.post('/login', async (req, res) => {
         let user = ret.find(x => x.email === email && x.password === password)
         if (user) {
             const token = jwt.sign({ email }, PRIVATE_KEY)
-            const profile = { id: user._id, name: user.name, phone: user.phone, email: user.email, image: user.image, token: token }
+            const profile = { id: user._id, name: user.name, address: user.address, phone: user.phone, email: user.email, image: user.image, token: token }
             return res.status(200).send({ success: true, data: profile })
         } else {
             res.status(401).send({ success: false, error: `Invalid user name and password` });
@@ -66,9 +66,9 @@ app.get('/users/images/:fileName', (req, res) => {
     try {
         res.status(200).download(`./images/${req.params.fileName}`)
     } catch (error) {
-        
+
     }
-    
+
 })
 
 function auth(req, res, next) {
@@ -124,7 +124,7 @@ app.get("/users/:userId/foods", async (req, res) => {
 app.post("/users/:userId/foods", async (req, res) => {
     try {
         const food = req.body;
-       food._id = new ObjectId();
+        food._id = new ObjectId();
         console.log(food)
         const ret = await db.collection(COLLECTION_NAME).updateOne(
             { _id: new ObjectId(req.params.userId) },
@@ -298,14 +298,14 @@ app.put("/users/:userId", async (req, res) => {
             {
                 _id: new ObjectId(req.params.userId)
             },
-            { $set: { name: user.name, phone: user.phone, email: user.email} }
+            { $set: { name: user.name, phone: user.phone, address: user.address } }
         );
 
         const userInfo = await db.collection(COLLECTION_NAME).findOne({
             _id: new ObjectId(req.params.userId)
         })
         const arr = req.headers.authorization.split(" ")
-        const profile = { id: userInfo._id, name: userInfo.name, phone: userInfo.phone, email: userInfo.email, image: userInfo.image, token: arr[1] }
+        const profile = { id: userInfo._id, name: userInfo.name, address: userInfo.address, phone: userInfo.phone, email: userInfo.email, image: userInfo.image, token: arr[1] }
         res.status(200).send({ success: true, data: profile });
 
 
@@ -328,7 +328,7 @@ app.put("/users/:userId/images", async (req, res) => {
             _id: new ObjectId(req.params.userId)
         })
         const arr = req.headers.authorization.split(" ")
-        const profile = { id: userInfo._id, name: userInfo.name, phone: userInfo.phone, email: userInfo.email, image: userInfo.image, token: arr[1] }
+        const profile = { id: userInfo._id, name: userInfo.name, address: userInfo.address, phone: userInfo.phone, email: userInfo.email, image: userInfo.image, token: arr[1] }
         res.status(200).send({ success: true, data: profile });
 
     } catch (error) {

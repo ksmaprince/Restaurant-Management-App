@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, FlatList, TextInput } from 'react-native';
-import { FAB } from 'react-native-paper'; // Import FAB (Floating Action Button)
+import { StyleSheet, FlatList } from 'react-native';
 import { GlobalContext } from "../../../context/GlobalContext";
 import { getUserNotes } from '../../../network/useNoteService';
-import ShowItem from './NodeItem';
-import { IconButton, MD3Colors, Divider } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import ShowItem from './NoteItem';
+import FabButton from '../../FabButton';
+import Background from '../../Background';
 
 export default function DailyNotes({ navigation }) {
   const { globalState, setGlobalState } = useContext(GlobalContext);
@@ -62,60 +61,22 @@ export default function DailyNotes({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={{
-        position: "relative",
-        width: "100%",
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-      }}>
-        <TextInput
-          placeholder="Search your notes..."
-          style={{
-            flex: 1,
-            paddingVertical: 10,
-            paddingHorizontal: 10,
-            paddingLeft: 40,
-          }}
-          onChangeText={handleSearchText}
-          value={searchText}
-        />
-        <Icon
-          name="search"
-          size={20}
-          color="#333"
-          style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}
-        />
-        <IconButton
-          icon="sort-alphabetical-ascending"
-          iconColor={MD3Colors.error50}
-          size={30}
-          style={{ position: "absolute", top: -10, right: 40, zIndex: 1 }}
-          onPress={handleAsc}
-        />
-        <IconButton
-          icon="sort-alphabetical-descending"
-          iconColor={MD3Colors.error50}
-          size={30}
-          style={{ position: "absolute", top: -10, right: 5, zIndex: 1 }}
-          onPress={handleDesc}
-        />
-      </View>
+    <Background style={styles.container}>
       <FlatList
         data={dailyNotes}
         keyExtractor={(item) => item._id}
         renderItem={item => <ShowItem itemData={item.item} userId={userId} navigation={navigation} />}
-        style={{ width: '100%' }}
+
       />
       {/* Add a Floating Action Button (FAB) */}
-      <FAB
+      {/* <FAB
         style={styles.fab}
         small
         icon="plus"
         onPress={toAdd}
-      />
-    </View>
+      /> */}
+      <FabButton onPress={toAdd} />
+    </Background>
   );
 }
 

@@ -6,16 +6,17 @@ import Button from "../../Button"
 import { useContext, useEffect, useState } from "react"
 import { GlobalContext } from "../../../context/GlobalContext"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { ActivityIndicator, Avatar } from "react-native-paper"
+import { ActivityIndicator, Avatar, Icon } from "react-native-paper"
 import * as ImagePicker from 'expo-image-picker';
 import { useFirebase } from "../../../network/useFirebase"
 import { useUserService } from "../../../network/useUserService"
+import { DEFAULT_PROFILE_URL } from '@env'
 
 export const MyProfile = ({ navigation }) => {
     const { globalState, setGlobalState } = useContext(GlobalContext)
     const [loading, setLoading] = useState(false)
     const { uploadImage } = useFirebase()
-    const {updateProfileImage} = useUserService()
+    const { updateProfileImage } = useUserService()
 
     const logoutPress = async () => {
         try {
@@ -45,15 +46,15 @@ export const MyProfile = ({ navigation }) => {
 
                 //Upload to Cloud Storage
                 const imageRet = await uploadImage(globalState.userInfo.id, blob)
-                const image ={url: imageRet.imageUrl} ;
+                const image = { url: imageRet.imageUrl };
 
                 //Update image url to current user
                 const ret = await updateProfileImage(globalState.userInfo.token, globalState.userInfo.id, image)
-                
+
                 if (ret && ret.success) {
                     setLoading(false)
                     await AsyncStorage.setItem("USER", JSON.stringify(ret.data))
-                    setGlobalState({ ...globalState, userInfo: ret.data})
+                    setGlobalState({ ...globalState, userInfo: ret.data })
                     alert(imageRet.message)
                 }
             } catch (error) {
@@ -69,9 +70,14 @@ export const MyProfile = ({ navigation }) => {
     return (
         <Background>
 
-            {globalState.userInfo.image ? <Avatar.Image source={globalState.userInfo.image} size={150} /> : <Logo />}
+            {globalState.userInfo.image ? <Avatar.Image source={globalState.userInfo.image} size={150} /> : <Avatar.Image source={DEFAULT_PROFILE_URL} size={150}/>}
+
+            
             {loading && <ActivityIndicator size='small' />}
             <Header>{globalState.userInfo.name} </Header>
+            <Paragraph>
+                {globalState.userInfo.address}
+            </Paragraph>
             <Paragraph>
                 Phone: {globalState.userInfo.phone}
             </Paragraph>
