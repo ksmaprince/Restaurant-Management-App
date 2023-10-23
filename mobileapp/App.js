@@ -7,8 +7,6 @@ import { theme } from './core/theme'
 
 import { StartScreen, LoginScreen, RegisterScreen, ResetPasswordScreen, DashboardScreen, WelcomeScreen } from './components/screens'
 import { GlobalContext } from './context/GlobalContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFoodService } from '../mobileapp/network/useFoodService';
 
 const Stack = createNativeStackNavigator();
 

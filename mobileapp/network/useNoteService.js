@@ -27,7 +27,6 @@ export const getUserNotes = async (token, userId) => {
 
 export const createNote = async (token, userId, note) => {
     try {
-        console.log('aaaaaaaaaaaa', userId)
         const response = await fetch(`${BASE_URL}/users/${userId}/notes`, {
             method: "POST",
             headers: {

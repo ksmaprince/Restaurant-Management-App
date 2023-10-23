@@ -4,6 +4,7 @@ import Logo from '../Logo'
 import Header from '../Header'
 import Button from '../Button'
 import Paragraph from '../Paragraph'
+import FabButton from '../FabButton'
 
 export default function StartScreen({ navigation }) {
   return (

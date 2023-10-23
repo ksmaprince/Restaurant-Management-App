@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import { ActivityIndicator, Text } from 'react-native-paper'
 import Background from '../Background'
 import Logo from '../Logo'
@@ -12,6 +12,7 @@ import { emailValidator } from '../../helpers/emailValidator'
 import { passwordValidator } from '../../helpers/passwordValidator'
 import { nameValidator } from '../../helpers/nameValidator'
 import { phoneValidator } from '../../helpers/phoneValidator'
+import { addressValidator } from '../../helpers/addressValidator'
 import { useUserService } from '../../network/useUserService'
 
 import { Base64 } from 'js-base64'
@@ -19,6 +20,7 @@ import { Base64 } from 'js-base64'
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
   const [phone, setPhone] = useState({ value: '', error: '' })
+  const [address, setAddress] = useState({value: '', error: ''})
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const [loading, setLoading] = useState(false)
@@ -27,11 +29,13 @@ export default function RegisterScreen({ navigation }) {
   const onSignUpPressed = async () => {
     const nameError = nameValidator(name.value)
     const phoneError = phoneValidator(phone.value)
+    const addressError = addressValidator(address.value)
     const emailError = emailValidator(email.value)
     const passwordError = passwordValidator(password.value)
-    if (emailError || passwordError || nameError || phoneError) {
+    if (emailError || passwordError || nameError || phoneError || addressError) {
       setEmail({ ...email, error: emailError })
       setPassword({ ...password, error: passwordError })
+      setAddress({...address, error: addressError})
       setPhone({ ...phone, error: phoneError })
       setName({ ...name, error: nameError })
       return
@@ -39,7 +43,7 @@ export default function RegisterScreen({ navigation }) {
     try {
       setLoading(true)
       const encryptedPassword = Base64.encode(password.value)
-      const user = { name: name.value, phone: phone.value, email: email.value, password: encryptedPassword }
+      const user = { name: name.value, phone: phone.value, address: address.value, email: email.value, password: encryptedPassword }
       const ret = await createUser(user)
       setLoading(false)
       if (ret) {
@@ -53,7 +57,7 @@ export default function RegisterScreen({ navigation }) {
           //     })
           //   }
           // }])
-          alert('User created successfully')
+          alert('User registered successfully')
           navigation.reset({
             index: 0,
             routes: [{ name: 'LoginScreen' }],
@@ -71,7 +75,7 @@ export default function RegisterScreen({ navigation }) {
         //   text: 'Okay',
         //   onPress: () => { }
         // }])
-        alert('Create user unsuccessful!')
+        alert('Register user unsuccessful!')
       }
     } catch (error) {
       setLoading(false)
@@ -79,7 +83,7 @@ export default function RegisterScreen({ navigation }) {
       //   text: 'Okay',
       //   onPress: () => { }
       // }])
-      alert('Create user unsuccessful!')
+      alert('Register user unsuccessful!')
     }
 
   }
@@ -87,7 +91,7 @@ export default function RegisterScreen({ navigation }) {
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
-      <Logo />
+      <Logo/>
       <Header>Create Account</Header>
       <TextInput
         label="Name"
@@ -96,6 +100,8 @@ export default function RegisterScreen({ navigation }) {
         onChangeText={(text) => setName({ value: text, error: '' })}
         error={!!name.error}
         errorText={name.error}
+        autoCapitalize="none"
+        autoCompleteType="none"
       />
       <TextInput
         label="Phone"
@@ -105,9 +111,18 @@ export default function RegisterScreen({ navigation }) {
         error={!!phone.error}
         errorText={phone.error}
         autoCapitalize="none"
-        autoCompleteType="number"
-        textContentType="number"
-        keyboardType="number"
+        autoCompleteType="none"
+        keyboardType="number-pad"
+      />
+      <TextInput
+        label="Address"
+        returnKeyType="next"
+        value={address.value}
+        onChangeText={(text) => setAddress({ value: text, error: '' })}
+        error={!!address.error}
+        errorText={address.error}
+        autoCapitalize="none"
+        autoCompleteType="none"
       />
       <TextInput
         label="Email"
@@ -117,7 +132,7 @@ export default function RegisterScreen({ navigation }) {
         error={!!email.error}
         errorText={email.error}
         autoCapitalize="none"
-        autoCompleteType="email"
+        autoCompleteType="none"
         textContentType="emailAddress"
         keyboardType="email-address"
       />

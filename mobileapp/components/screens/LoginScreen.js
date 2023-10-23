@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
+import { TouchableOpacity, StyleSheet, View, Alert, ScrollView } from 'react-native'
 import { ActivityIndicator, Text } from 'react-native-paper'
 import Background from '../Background'
 import Logo from '../Logo'
@@ -86,7 +86,7 @@ export default function LoginScreen({ navigation }) {
         error={!!email.error}
         errorText={email.error}
         autoCapitalize="none"
-        autoCompleteType="email"
+        autoCompleteType="none"
         textContentType="emailAddress"
         keyboardType="email-address"
       />
