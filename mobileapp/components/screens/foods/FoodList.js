@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -16,6 +17,7 @@ import confirmationBox from '../../../helpers/confirmationBox';
 export default function FoodList({ navigation }) {
   const { globalState, setGlobalState } = useContext(GlobalContext);
   const { getFoods } = useFoodService();
+  const { getFoods } = useFoodService();
   const [foodData, setFoodData] = useState([]);
   const userId = globalState.userInfo.id;
   const [searchText, setSearchText] = useState("");
@@ -31,6 +33,7 @@ export default function FoodList({ navigation }) {
 
   //load data from database with async and await
   const fetchFoodData = async () => {
+    const fdata = await getFoods(globalState.userInfo.token, userId);
     const fdata = await getFoods(globalState.userInfo.token, userId);
     return fdata;
   };

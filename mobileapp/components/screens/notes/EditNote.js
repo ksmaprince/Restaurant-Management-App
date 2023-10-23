@@ -1,71 +1,56 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TextInput } from 'react-native';
 import { updateNote, getUserNotes } from '../../../network/useNoteService';
 import { GlobalContext } from '../../../context/GlobalContext';
-import { TextInput as PaperTextInput, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
 const EditNote = ({ navigation, route }) => {
     const [headerText, setHeaderText] = useState('');
-    // const [dateText, setDateText] = useState('');
     const [commentText, setCommentText] = useState('');
     const { globalState, setGlobalState } = useContext(GlobalContext);
-    const [commentHeight, setCommentHeight] = useState(40);
 
     const { _id, header, date, comment } = route.params.data;
     const userId = globalState.userInfo.id;
     useEffect(() => {
         setHeaderText(header);
-        // setDateText(date);
         setCommentText(comment);
     }, [header, date, comment]);
-
-    const handleContentSizeChange = (contentWidth, contentHeight) => {
-        if (contentHeight > 80) {
-            setCommentHeight(80);
-        } else {
-            setCommentHeight(contentHeight);
-        }
-    };
 
     const handleUpdateNote = async () => {
         const time = new Date();
         const updatedNote = { _id, header: headerText, date: time, comment: commentText };
-        const res = await updateNote(globalState.userInfo.token, userId, updatedNote);
-        if (res) {
-            console.log("Note updated successfully");
-            const noteData = await getUserNotes(globalState.userInfo.token,userId);
-            setGlobalState({ ...globalState, DailyNotes: noteData.data });
-            navigation.navigate('dailyNotes');
+        try {
+            const res = await updateNote(globalState.userInfo.token, userId, updatedNote);
+            if (res) {
+                const noteData = await getUserNotes(globalState.userInfo.token, userId);
+                setGlobalState({ ...globalState, DailyNotes: noteData.data });
+                alert("Note updated successfully")
+                navigation.goBack()
+            }
+        } catch (error) {
+            alert(error.message)
         }
+
     };
 
     return (
         <View style={styles.container}>
-            <PaperTextInput
-                style={styles.infoContainer}
-                placeholder="Header"
+            <TextInput
                 value={headerText}
+                style={styles.inputHeading}
+                placeholder="Title ..."
                 onChangeText={(text) => setHeaderText(text)}
             />
-            {/* <PaperTextInput
-                style={styles.input}
-                placeholder="Date"
-                value={dateText}
-                onChangeText={(text) => setDateText(text)}
-            /> */}
-            <PaperTextInput
-                style={{
-                    ...styles.infoContainer, height: commentHeight
-                }}
-                placeholder="Comment"
+            <TextInput
                 value={commentText}
-                onChangeText={(text) => setCommentText(text)}
+                style={styles.input}
                 multiline
-                onContentSizeChange={(e) => {
-                    handleContentSizeChange(e.nativeEvent.contentSize.width, e.nativeEvent.contentSize.height);
-                }}
+                placeholder="Enter your note here ... "
+                onChangeText={(text) => setCommentText(text)}
             />
-            <Button mode="contained" style={styles.button} onPress={handleUpdateNote}>Update Note</Button>
+            <Button mode="outlined" onPress={handleUpdateNote} style={styles.button}>
+                Update Note
+            </Button>
         </View>
     );
 };
@@ -73,34 +58,25 @@ const EditNote = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        justifyContent: 'center',
-        backgroundColor: '#fff'
+    },
+    inputHeading: {
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingTop: 4,
+        paddingBottom: 4,
+        fontSize: 24,
+        margin: 4,
+    }, input: {
+        flex: 1,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingTop: 4,
+        paddingBottom: 4,
+        fontSize: 16,
+        margin: 4
     },
     button: {
-        backgroundColor: '#3498db',
-        marginTop: 16,
-    },
-    input: {
-        marginBottom: 16,
-        padding: "10px 2px",
-        backgroundColor: '#f5f5f5', // Light gray background for each input field
-        borderRadius: 8,
-    },
-    infoContainer: {
-        paddingTop: 1,
-        marginBottom: 16,
-        backgroundColor: '#f5f5f5',
-        borderRadius: 8,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        margin: 20,
     },
 });
-
 export default EditNote;

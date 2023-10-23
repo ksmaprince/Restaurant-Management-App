@@ -21,7 +21,7 @@ export default function ResetPasswordScreen({ navigation }) {
 
   return (
     <Background>
-      <BackButton goBack={navigation.goBack()} />
+      <BackButton goBack={navigation.goBack} />
       <Logo />
       <Header>Restore Password</Header>
       <TextInput
@@ -32,7 +32,7 @@ export default function ResetPasswordScreen({ navigation }) {
         error={!!email.error}
         errorText={email.error}
         autoCapitalize="none"
-        autoCompleteType="email"
+        autoCompleteType="none"
         textContentType="emailAddress"
         keyboardType="email-address"
         description="You will receive email with password reset link."

@@ -12,7 +12,7 @@ export const NotesStack = () => {
             <Stack.Screen
                 name="dailyNotes"
                 component={DailyNotes}
-                options={{ title: "Daily Notes", headerShown: true }}
+                options={{ title: "All Notes", headerShown: true }}
             />
             <Stack.Screen
                 name="noteDetail"

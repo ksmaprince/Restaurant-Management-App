@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, FlatList, Platform } from 'react-native';
-import { FAB } from 'react-native-paper'; // Import FAB (Floating Action Button)
+import { StyleSheet, FlatList } from 'react-native';
 import { GlobalContext } from "../../../context/GlobalContext";
 import { getUserNotes } from '../../../network/useNoteService';
-import ShowItem from './NodeItem';
+import ShowItem from './NoteItem';
+import FabButton from '../../FabButton';
+import Background from '../../Background';
 
 export default function DailyNotes({ navigation }) {
   const { globalState, setGlobalState } = useContext(GlobalContext);
   const [dailyNotes, setDailyData] = useState({});
+  const [searchText, setSearhText] = useState("");
+
   const userId = globalState.userInfo.id;
   const fetchNoteData = async () => {
-    const noteData = await getUserNotes(globalState.userInfo.token,userId);
+    const noteData = await getUserNotes(globalState.userInfo.token, userId);
     return noteData;
   };
 
@@ -18,6 +21,32 @@ export default function DailyNotes({ navigation }) {
     const noteData = await fetchNoteData();
     setGlobalState({ ...globalState, DailyNotes: noteData.data });
   };
+
+  const handleSearchText = (text) => {
+    setSearhText(text);
+    const filteredData = filterData(globalState.DailyNotes, text);
+    setDailyData(filteredData);
+  }
+
+  const filterData = (data, searchText) => {
+    return data.filter((item) => {
+      return item.header.toLowerCase().includes(searchText.toLowerCase());
+    });
+  }
+
+  const handleAsc = () => {
+    const sortedData = [...globalState.DailyNotes];
+    sortedData.sort((a, b) => a.header.localeCompare(b.header));
+    const filteredData = filterData(sortedData, searchText);
+    setDailyData(filteredData);
+  }
+
+  const handleDesc = () => {
+    const sortedData = [...globalState.DailyNotes];
+    sortedData.sort((a, b) => b.header.localeCompare(a.header));
+    const filteredData = filterData(sortedData, searchText);
+    setDailyData(filteredData);
+  }
 
   useEffect(() => {
     setDailyData(globalState.DailyNotes);
@@ -32,21 +61,22 @@ export default function DailyNotes({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <Background style={styles.container}>
       <FlatList
         data={dailyNotes}
         keyExtractor={(item) => item._id}
         renderItem={item => <ShowItem itemData={item.item} userId={userId} navigation={navigation} />}
-        style={{ width: '100%' }}
+
       />
       {/* Add a Floating Action Button (FAB) */}
-      <FAB
+      {/* <FAB
         style={styles.fab}
         small
         icon="plus"
         onPress={toAdd}
-      />
-    </View>
+      /> */}
+      <FabButton onPress={toAdd} />
+    </Background>
   );
 }
 

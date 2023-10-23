@@ -1,14 +1,11 @@
-import React, { useContext } from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
-import { IconButton, MD3Colors, Text } from "react-native-paper";
+import { StyleSheet, Platform, Pressable } from 'react-native';
+import { Card, IconButton, MD3Colors, Text } from "react-native-paper";
 import { deleteNote, getUserNotes } from '../../../network/useNoteService';
-import { GlobalContext } from '../../../context/GlobalContext';
 
 export default function ShowItem({ itemData, userId, navigation }) {
-    const { globalState, setGlobalState } = useContext(GlobalContext);
-    const toDetail = (data) => {
-        navigation.navigate("noteDetail", data);
-    }
+    // const toDetail = (data) => {
+    //     navigation.navigate("noteDetail", data);
+    // }
 
     const toDeleteNote = async () => {
         const success = await deleteNote(globalState.userInfo.token, userId, itemData._id);
@@ -50,46 +47,34 @@ export default function ShowItem({ itemData, userId, navigation }) {
         hour12: true,
     });
 
-    const toEdit = (data) => {
-        console.log('data:', data)
-        navigation.navigate("editNote", { data: data, userId });
+    const toEdit = () => {
+        navigation.navigate("editNote", { data: itemData });
     }
     return (
-        <View style={styles.itemContainer}>
-            <View style={styles.itemContent}>
-                <Text style={styles.itemText}>{itemData.header}</Text>
-                <Text style={styles.itemText}>{formattedDate}</Text>
-            </View>
-            <View style={styles.itemButton}>
+        <Card style={styles.container}>
+            <Card.Content>
+                <Pressable onPress={toEdit}>
+                    <Text variant='titleLarge'>{itemData.header}</Text>
+                    <Text variant='bodyMedium'>{itemData.comment}</Text>
+                    <Text variant='bodySmall'>{formattedDate}</Text>
+                </Pressable>
+            </Card.Content>
+            <Card.Actions>
                 <IconButton
-                    icon="format-list-bulleted-triangle"
+                    icon="delete"
                     iconColor={MD3Colors.error50}
-                    size={25}
-                    onPress={() => toDetail(itemData)}
-                />
-                <IconButton
-                    icon="book-edit"
-                    iconColor={MD3Colors.error50}
-                    size={25}
-                    onPress={() => toEdit(itemData)}
-                />
-                <IconButton
-                    icon="delete-circle"
-                    iconColor={MD3Colors.error50}
-                    size={25}
+                    size={20}
                     onPress={toDelete}
                 />
-            </View>
-        </View>
+            </Card.Actions>
+        </Card>
     );
 }
-
-
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white',
+        margin: 5
     },
     itemContainer: {
         flexDirection: 'row',
