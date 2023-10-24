@@ -84,5 +84,23 @@ export const useUserService = () => {
         }
     }
 
-    return { getUsers, createUser, startLogin, updateProfile, updateProfileImage }
+    const changePassword = async (token, userId, data) => {
+        try {
+            const response = await fetch(`${BASE_URL}/users/${userId}/changePassword`, {
+                method: "PUT",
+                headers: {
+                    Accept: "application/json",
+                    'Content-Type': "application/json",
+                    'Authorization': `Barer ${token}`
+                },
+                body: JSON.stringify(data)
+            })
+            const json = await response.json()
+            return json
+        } catch (error) {
+            throw error
+        }
+    }
+
+    return { getUsers, createUser, startLogin, updateProfile, updateProfileImage, changePassword }
 }

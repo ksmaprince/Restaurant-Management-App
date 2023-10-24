@@ -59,7 +59,6 @@ export const useFoodService = () => {
     }
     const getFoods = async (token,userId) => {
         try {
-            console.log(userId);
             const response = await fetch(`${BASE_URL}/users/${userId}/foods`, {
                 headers: {
                     'Accept': 'application/json',
@@ -68,9 +67,7 @@ export const useFoodService = () => {
                 },
             });
             if (response.status === 200) {
-                console.log('res', response);
                 const data = await response.json();
-                console.log('data', data);
                 return data;
             } else {
                 return "DB Error";

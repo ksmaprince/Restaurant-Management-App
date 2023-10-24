@@ -14,7 +14,7 @@ export const FoodsStack = () => {
             <Stack.Screen
                 name="foodlist"
                 component={FoodList}
-                options={{ title: "Food List", headerShown: true }}
+                options={{ title: "All Foods", headerShown: true }}
             />
             <Stack.Screen
                 name="fooddetail"

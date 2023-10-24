@@ -336,4 +336,32 @@ app.put("/users/:userId/images", async (req, res) => {
     }
 })
 
+app.put("/users/:userId/changePassword", async (req, res) => {
+    try {
+        const data = req.body;
+        const userInfo = await db.collection(COLLECTION_NAME).findOne({
+            _id: new ObjectId(req.params.userId)
+        })
+        if (userInfo.password === data.currentPassword) {
+            if (userInfo.password !== data.password) {
+                const ret = await db.collection(COLLECTION_NAME).updateOne(
+                    {
+                        _id: new ObjectId(req.params.userId)
+                    },
+                    { $set: { password: data.password } }
+                );
+                res.status(200).send({ success: true, data: ret });
+            } else {
+                res.status(201).send({ success: false, error: "You cannot use the old password" });
+            }
+
+        } else {
+            res.status(201).send({ success: false, error: "Current password is incorrect. " });
+        }
+
+    } catch (error) {
+        res.status(500).send({ success: false, error: "Can't the password: " + error.message });
+    }
+})
+
 app.listen(5001, () => console.log('Server is running at 5001 ... '))

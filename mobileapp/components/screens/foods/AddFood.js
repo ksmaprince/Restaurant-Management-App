@@ -1,17 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, TextInput, Alert,Image,SafeAreaView } from "react-native";
-import { IconButton, Button, ActivityIndicator, Avatar } from "react-native-paper";
+import React, { useContext, useState } from "react";
+import { StyleSheet, View, TextInput } from "react-native";
+import { Button, ActivityIndicator, Card } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { GlobalContext } from "../../../context/GlobalContext";
 import { useFoodService } from "../../../network/useFoodService";
-import { uriValidator } from "../../../helpers/uriValidator";
 import alert from '../../../helpers/alert'
 import { getCurrentDate } from "../../../helpers/getDateString";
 import * as ImagePicker from 'expo-image-picker';
 import { useFirebase } from "../../../network/useFirebase"
+import BackgroundWide from "../../BackgroundWide";
 export default function AddFood({ navigation }) {
   const { globalState } = useContext(GlobalContext);
   const [name, setName] = useState('');
@@ -61,9 +61,9 @@ export default function AddFood({ navigation }) {
       setSaving(false);
 
       if (response.success) {
-       // alert("Success", "Food created!")
+        // alert("Success", "Food created!")
         refreshFoodStack();
-          
+
       } else {
         alert("Error", response.error);
       }
@@ -82,42 +82,42 @@ export default function AddFood({ navigation }) {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        aspect: [4, 3],
-        quality: 1,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      aspect: [4, 3],
+      quality: 1,
     });
     if (!result.canceled) {
-        try {
-            setLoading(true)
-            const response = await fetch(result.assets[0].uri);
-            const blob = await response.blob();
+      try {
+        setLoading(true)
+        const response = await fetch(result.assets[0].uri);
+        const blob = await response.blob();
 
-            //Upload to Cloud Storage
-            const imageRet = await uploadImage(globalState.userInfo.id, blob)
-            if(imageRet.success)
-            {
-              setImageUri(imageRet.imageUrl);
-            }
-
-            //Update image url to current user
-           // const ret = await updateProfileImage(globalState.userInfo.token, globalState.userInfo.id, image)
-           
-            
-           // if (ret && ret.success) {
-                setLoading(false)
-               // await AsyncStorage.setItem("USER", JSON.stringify(ret.data))
-               // setGlobalState({ ...globalState, userInfo: ret.data})
-               // alert(imageRet.message)
-           // }
-        } catch (error) {
-            alert(error.message)
+        //Upload to Cloud Storage
+        const imageRet = await uploadImage(globalState.userInfo.id, blob)
+        if (imageRet.success) {
+          setImageUri(imageRet.imageUrl);
         }
+
+        //Update image url to current user
+        // const ret = await updateProfileImage(globalState.userInfo.token, globalState.userInfo.id, image)
+
+
+        // if (ret && ret.success) {
+        setLoading(false)
+        // await AsyncStorage.setItem("USER", JSON.stringify(ret.data))
+        // setGlobalState({ ...globalState, userInfo: ret.data})
+        // alert(imageRet.message)
+        // }
+      } catch (error) {
+        alert(error.message)
+      }
     }
-};
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-   
+    // <SafeAreaView style={styles.container}>
+
+    <BackgroundWide>
       <View style={styles.inputContainer}>
         <Ionicons name="fast-food" size={24} color="black" />
         <TextInput
@@ -141,17 +141,6 @@ export default function AddFood({ navigation }) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Entypo name="list" size={24} color="black" />
-        <TextInput
-          style={styles.input}
-          placeholder="Description"
-          placeholderTextColor="#888"
-          value={description}
-          onChangeText={(text) => setDescription(text)}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
         <MaterialCommunityIcons name="currency-usd" size={24} color="black" />
         <TextInput
           style={styles.input}
@@ -163,6 +152,20 @@ export default function AddFood({ navigation }) {
       </View>
 
       <View style={styles.inputContainer}>
+        <Entypo name="list" size={24} color="black" />
+        <TextInput
+          style={styles.input}
+          placeholder="Description"
+          placeholderTextColor="#888"
+          multiline
+          value={description}
+          onChangeText={(text) => setDescription(text)}
+        />
+      </View>
+
+
+
+      {/* <View style={styles.inputContainer}>
         <MaterialCommunityIcons name="image" size={24} color="black" />
         <TextInput
           style={styles.input}
@@ -171,24 +174,27 @@ export default function AddFood({ navigation }) {
           value={imageUri}
           onChangeText={(text) => setImageUri(text)}
         />
-        
-      </View>
+
+      </View> */}
       {loading && <ActivityIndicator size='small' />}
-      <View  style={{ justifyContent:'center',alignItems:'center',width:'100%',marginTop:20}}>
-      {imageUri===''?<Avatar.Image source={require("../../../assets/foodPlaceholder.png")} size={250} />
-     :<Avatar.Image source={{uri:imageUri}} size={250} />
-    }
-      
+      {imageUri && <Card style={{ width: 320 }}>
+        <Card.Cover source={{ uri: imageUri }} />
+      </Card>}
+      {/* <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: 20 }}>
+        {imageUri === '' ? <Icon.Image source={require("../../../assets/foodPlaceholder.png")} size={250} />
+          : <Avatar.Image source={{ uri: imageUri }} size={250} />
+        }
+
+
+      </View> */}
+
+      <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: 20 }}>
+        <Button icon="camera" mode="outlined" onPress={pickImage}>
+          Add Image
+        </Button>
       </View>
-      <View  style={{ justifyContent:'center',alignItems:'center',width:'100%',marginTop:20}}>
-      <Button icon="camera" mode="outlined" onPress={pickImage}>
-                Change Image
-            </Button>
-      </View>
-    
-        
-      
-      
+
+
       <View style={{ width: "100%", position: "absolute", bottom: 10 }}>
         <Button
           icon="floppy"
@@ -199,7 +205,8 @@ export default function AddFood({ navigation }) {
           Save
         </Button>
       </View>
-      </SafeAreaView>
+    </BackgroundWide>
+    // </SafeAreaView>
   );
 }
 
@@ -209,6 +216,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "flex-start",
     justifyContent: "flex-start",
+    padding: 10,
+    backgroundColor: 'green',
+    margin: 10
   },
   inputContainer: {
     flexDirection: "row",
@@ -218,6 +228,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     width: "100%",
+    margin: 10
   },
   icon: {
     width: 20,
