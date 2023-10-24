@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MyProfile } from '../screens/profile/MyProfile';
 import { UpdateProfile } from '../screens/profile/UpdateProfile';
+import { ChangePassword } from '../screens/profile/ChangePassword';
 
 const Stack = createNativeStackNavigator()
 
@@ -17,6 +18,11 @@ export const ProfileStack = () => {
                 component={UpdateProfile}
                 options={{ title: "Update Profile", headerShown: true }}
             />
+
+            <Stack.Screen
+                name='changePassword'
+                component={ChangePassword}
+                options={{ title: "Change Password", headerShown: true }} />
 
         </Stack.Navigator>
     )

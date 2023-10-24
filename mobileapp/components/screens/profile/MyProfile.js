@@ -11,6 +11,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useFirebase } from "../../../network/useFirebase"
 import { useUserService } from "../../../network/useUserService"
 import { DEFAULT_PROFILE_URL } from '@env'
+import { Pressable } from "react-native"
 
 export const MyProfile = ({ navigation }) => {
     const { globalState, setGlobalState } = useContext(GlobalContext)
@@ -63,16 +64,19 @@ export const MyProfile = ({ navigation }) => {
         }
     };
 
-    const updateProfile = async () => {
+    const updateProfile = () => {
         navigation.navigate('updateProfile')
     }
 
+    const changePassword = () => {
+        navigation.navigate('changePassword')
+    }
     return (
         <Background>
 
-            {globalState.userInfo.image ? <Avatar.Image source={globalState.userInfo.image} size={150} /> : <Avatar.Image source={DEFAULT_PROFILE_URL} size={150}/>}
-
-            
+            <Pressable onPress={pickImage}>
+                {globalState.userInfo.image ? <Avatar.Image source={globalState.userInfo.image} size={150} /> : <Avatar.Image source={DEFAULT_PROFILE_URL} size={150} />}
+            </Pressable>
             {loading && <ActivityIndicator size='small' />}
             <Header>{globalState.userInfo.name} </Header>
             <Paragraph>
@@ -89,8 +93,8 @@ export const MyProfile = ({ navigation }) => {
                 Update Profile
             </Button>
 
-            <Button icon="camera" mode="outlined" onPress={pickImage}>
-                Change Image
+            <Button mode="outlined" onPress={changePassword}>
+                Change Password
             </Button>
 
             <Button

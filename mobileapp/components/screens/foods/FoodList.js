@@ -5,13 +5,15 @@ import {
   View,
   Image,
   TextInput,
-  SafeAreaView,
   FlatList,
+  Pressable,
 } from "react-native";
-import { IconButton, MD3Colors, Divider } from "react-native-paper";
+import { IconButton, MD3Colors, Divider, Card } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { GlobalContext } from "../../../context/GlobalContext";
 import { useFoodService } from "../../../network/useFoodService";
+import FabButton from "../../FabButton"
+import BackgroundWide from "../../BackgroundWide";
 export default function FoodList({ navigation }) {
   const { globalState, setGlobalState } = useContext(GlobalContext);
   const { getFoods } = useFoodService();
@@ -25,8 +27,8 @@ export default function FoodList({ navigation }) {
   const showDeleteConfirmation = () => {
     setIsDeleteConfirmationVisible(true);
   };
-   // Function to handle confirm delete
-  
+  // Function to handle confirm delete
+
 
   //load data from database with async and await
   const fetchFoodData = async () => {
@@ -54,13 +56,16 @@ export default function FoodList({ navigation }) {
   //display each food item in card
   const renderFoodItem = ({ item }) => {
     return (
-      <>
-        <View style={styles.row}>
+
+      <Card style={{ marginBottom: 10 }}>
+        <Card.Content style={styles.row}>
           <View style={[styles.column, { width: "120", padding: 20 }]}>
-            <Image
-              source={{ uri: item.image.uri }}
-              style={{ width: 100, height: 100,borderRadius:50,resizeMode:'cover' }}
-            />
+            <Pressable onPress={() => handleDetailFood(item)}>
+              <Image
+                source={{ uri: item.image.uri }}
+                style={{ width: 100, height: 100, borderRadius: 5, resizeMode: 'cover' }}
+              />
+            </Pressable>
           </View>
           <View style={[styles.column, { paddingTop: 20 }]}>
             <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
@@ -88,9 +93,8 @@ export default function FoodList({ navigation }) {
               />
             </View>
           </View>
-        </View>
-        <Divider style={{ color: "red" }} />
-      </>
+        </Card.Content>
+      </Card>
     );
   };
 
@@ -128,11 +132,11 @@ export default function FoodList({ navigation }) {
     const handleConfirmDelete = () => {
       // Perform the delete action here
       // ...
-  
+
       // Close the confirmation modal
       setIsDeleteConfirmationVisible(false);
     };
-  
+
     // Function to handle cancel delete
     const handleCancelDelete = () => {
       // Close the confirmation modal
@@ -178,7 +182,8 @@ export default function FoodList({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    // <SafeAreaView style={styles.container}>
+    <BackgroundWide>
       <View
         style={{
           position: "relative",
@@ -186,6 +191,7 @@ export default function FoodList({ navigation }) {
           borderWidth: 1,
           borderColor: "#ccc",
           borderRadius: 5,
+          margin: 5,
         }}
       >
         <TextInput
@@ -220,14 +226,7 @@ export default function FoodList({ navigation }) {
           onPress={handleDesc}
         />
       </View>
-      <View style={styles.roundButton}>
-        <IconButton
-          icon="plus-thick"
-          iconColor={MD3Colors.error50}
-          size={20}
-          onPress={handleAddFood}
-        />
-      </View>
+      <FabButton onPress={handleAddFood} />
       <Divider />
       {!globalState.foodData && <Text>No Foods Found</Text>}
       <FlatList
@@ -236,7 +235,8 @@ export default function FoodList({ navigation }) {
         renderItem={renderFoodItem}
         style={{ width: "100%" }}
       />
-    </SafeAreaView>
+    </BackgroundWide>
+    // </SafeAreaView>
   );
 }
 
