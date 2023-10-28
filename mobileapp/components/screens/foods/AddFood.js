@@ -98,16 +98,7 @@ export default function AddFood({ navigation }) {
           setImageUri(imageRet.imageUrl);
         }
 
-        //Update image url to current user
-        // const ret = await updateProfileImage(globalState.userInfo.token, globalState.userInfo.id, image)
-
-
-        // if (ret && ret.success) {
         setLoading(false)
-        // await AsyncStorage.setItem("USER", JSON.stringify(ret.data))
-        // setGlobalState({ ...globalState, userInfo: ret.data})
-        // alert(imageRet.message)
-        // }
       } catch (error) {
         alert(error.message)
       }
@@ -115,8 +106,6 @@ export default function AddFood({ navigation }) {
   };
 
   return (
-    // <SafeAreaView style={styles.container}>
-
     <BackgroundWide>
       <View style={styles.inputContainer}>
         <Ionicons name="fast-food" size={24} color="black" />
@@ -163,30 +152,10 @@ export default function AddFood({ navigation }) {
         />
       </View>
 
-
-
-      {/* <View style={styles.inputContainer}>
-        <MaterialCommunityIcons name="image" size={24} color="black" />
-        <TextInput
-          style={styles.input}
-          placeholder="Image URI"
-          placeholderTextColor="#888"
-          value={imageUri}
-          onChangeText={(text) => setImageUri(text)}
-        />
-
-      </View> */}
       {loading && <ActivityIndicator size='small' />}
       {imageUri && <Card style={{ width: 320 }}>
         <Card.Cover source={{ uri: imageUri }} />
       </Card>}
-      {/* <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: 20 }}>
-        {imageUri === '' ? <Icon.Image source={require("../../../assets/foodPlaceholder.png")} size={250} />
-          : <Avatar.Image source={{ uri: imageUri }} size={250} />
-        }
-
-
-      </View> */}
 
       <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: 20 }}>
         <Button icon="camera" mode="outlined" onPress={pickImage}>
@@ -206,7 +175,6 @@ export default function AddFood({ navigation }) {
         </Button>
       </View>
     </BackgroundWide>
-    // </SafeAreaView>
   );
 }
 

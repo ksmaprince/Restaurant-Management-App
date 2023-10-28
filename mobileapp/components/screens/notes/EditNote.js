@@ -24,7 +24,6 @@ const EditNote = ({ navigation, route }) => {
             if (res) {
                 const noteData = await getUserNotes(globalState.userInfo.token, userId);
                 setGlobalState({ ...globalState, DailyNotes: noteData.data });
-                alert("Note updated successfully")
                 navigation.goBack()
             }
         } catch (error) {

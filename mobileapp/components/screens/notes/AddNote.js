@@ -24,7 +24,6 @@ const AddNote = ({ navigation }) => {
             try {
                 const noteData = await getUserNotes(globalState.userInfo.token, userId);
                 setGlobalState({ ...globalState, DailyNotes: noteData.data });
-                alert("Note Saved successfully")
                 navigation.goBack()
             } catch (error) {
                 Alert.alert(error.message)

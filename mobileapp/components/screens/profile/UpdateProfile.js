@@ -44,7 +44,6 @@ export const UpdateProfile = ({ navigation }) => {
                 if (ret.success) {
                     await AsyncStorage.setItem("USER", JSON.stringify(ret.data))
                     setGlobalState({ ...globalState, userInfo: ret.data })
-                    alert('Profile updated successfully')
                     navigation.goBack()
 
                 } else {

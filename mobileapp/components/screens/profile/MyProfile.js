@@ -56,7 +56,6 @@ export const MyProfile = ({ navigation }) => {
                     setLoading(false)
                     await AsyncStorage.setItem("USER", JSON.stringify(ret.data))
                     setGlobalState({ ...globalState, userInfo: ret.data })
-                    alert(imageRet.message)
                 }
             } catch (error) {
                 alert(error.message)

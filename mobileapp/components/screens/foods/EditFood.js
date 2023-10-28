@@ -29,7 +29,6 @@ export default function EditFood({ navigation, route }) {
 
 
   const { updateFood } = useFoodService();
-  console.log(route.params.item)
   const handleUpdateFood = async () => {
     if (!name || !origin || !description || !price || !imageUri) {
       alert("Error", "Please fill in all fields.");

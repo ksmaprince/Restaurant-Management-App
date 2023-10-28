@@ -22,15 +22,10 @@ export default function FoodList({ navigation }) {
   const [searchText, setSearchText] = useState("");
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
 
-  //function to show delete confirmation box
-  // Function to show the delete confirmation modal
   const showDeleteConfirmation = () => {
     setIsDeleteConfirmationVisible(true);
   };
-  // Function to handle confirm delete
-
-
-  //load data from database with async and await
+  
   const fetchFoodData = async () => {
     const fdata = await getFoods(globalState.userInfo.token, userId);
     return fdata;

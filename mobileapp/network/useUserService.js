@@ -55,7 +55,7 @@ export const useUserService = () => {
                 headers: {
                     Accept: "application/json",
                     'Content-Type': "application/json",
-                    'Authorization': `Barer ${token}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(user)
             })
@@ -73,7 +73,7 @@ export const useUserService = () => {
                 headers: {
                     Accept: "application/json",
                     'Content-Type': "application/json",
-                    'Authorization': `Barer ${token}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(image)
             })
@@ -91,7 +91,7 @@ export const useUserService = () => {
                 headers: {
                     Accept: "application/json",
                     'Content-Type': "application/json",
-                    'Authorization': `Barer ${token}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(data)
             })

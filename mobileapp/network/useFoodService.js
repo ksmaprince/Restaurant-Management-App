@@ -33,6 +33,7 @@ export const useFoodService = () => {
                 },
                 body: JSON.stringify(food),
             })
+            console.log(response)
             const json = await response.json()
             return json;
         } catch (error) {

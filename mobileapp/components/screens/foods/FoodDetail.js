@@ -5,9 +5,8 @@ import Button from '../../Button';
 
 export default function FoodDetail({ navigation, route }) {
   const { item } = route.params;
-  console.log(item);
   return (
-    <Card style={{padding: 10}}>
+    <Card style={{ padding: 10 }}>
       <Card.Cover source={{ uri: item.image.uri }} />
       <Header>{item.name}</Header>
       <Paragraph>Origin: {item.origin}</Paragraph>
