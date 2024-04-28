@@ -5,7 +5,7 @@ import { useId } from 'react'
 export const getUserNotes = async (token, userId) => {
     try {
         console.log(userId);
-        const response = await fetch(`${BASE_URL}/users/${userId}/notes`, {
+        const response = await fetch(`${process.env.BASE_URL}/users/${userId}/notes`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export const getUserNotes = async (token, userId) => {
 
 export const createNote = async (token, userId, note) => {
     try {
-        const response = await fetch(`${BASE_URL}/users/${userId}/notes`, {
+        const response = await fetch(`${process.env.BASE_URL}/users/${userId}/notes`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -46,7 +46,7 @@ export const createNote = async (token, userId, note) => {
 
 export const updateNote = async (token, userId, note) => {
     try {
-        const response = await fetch(`${BASE_URL}/users/${userId}/notes/${note._id}`, {
+        const response = await fetch(`${process.env.BASE_URL}/users/${userId}/notes/${note._id}`, {
             method: "PUT",
             headers: {
                 Accept: "application/json",
@@ -64,7 +64,7 @@ export const updateNote = async (token, userId, note) => {
 
 export const deleteNote = async (token, userId, noteId) => {
     try {
-        const response = await fetch(`${BASE_URL}/users/${userId}/notes/${noteId}`, {
+        const response = await fetch(`${process.env.BASE_URL}/users/${userId}/notes/${noteId}`, {
             method: "DELETE",
             headers: {
                 Accept: "application/json",

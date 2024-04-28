@@ -75,7 +75,7 @@ export const UpdateProfile = ({ navigation }) => {
 
     return (
         <Background>
-            {globalState.userInfo.image ? <Avatar.Image source={globalState.userInfo.image} size={150} /> : <Avatar.Image source={DEFAULT_PROFILE_URL} size={100} />}
+            {globalState.userInfo.image ? <Avatar.Image source={{uri: globalState.userInfo.image}} size={150} /> : <Avatar.Image source={{uri:DEFAULT_PROFILE_URL}} size={150} />}
             {loading && <ActivityIndicator size='small' />}
             <Header>Update Profile</Header>
             <TextInput

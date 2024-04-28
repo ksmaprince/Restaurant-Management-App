@@ -1,9 +1,10 @@
 import { BASE_URL } from '@env'
+
 export const useUserService = () => {
 
     const getUsers = async () => {
         try {
-            const response = await fetch(`${BASE_URL}/users`);
+            const response = await fetch(`${process.env.BASE_URL}/users`);
             const json = await response.json();
             return json;
         } catch (error) {
@@ -13,7 +14,7 @@ export const useUserService = () => {
 
     const createUser = async (user) => {
         try {
-            const response = await fetch(`${BASE_URL}/signup`, {
+            const response = await fetch(`${process.env.BASE_URL}/signup`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
@@ -30,7 +31,7 @@ export const useUserService = () => {
 
     const startLogin = async (credential) => {
         try {
-            const response = await fetch(`${BASE_URL}/login`, {
+            const response = await fetch(`${process.env.BASE_URL}/login`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
@@ -50,7 +51,7 @@ export const useUserService = () => {
         console.log('User', user)
         console.log('Token', token)
         try {
-            const response = await fetch(`${BASE_URL}/users/${userId}`, {
+            const response = await fetch(`${process.env.BASE_URL}/users/${userId}`, {
                 method: "PUT",
                 headers: {
                     Accept: "application/json",
@@ -68,7 +69,7 @@ export const useUserService = () => {
 
     const updateProfileImage = async (token, userId, image) => {
         try {
-            const response = await fetch(`${BASE_URL}/users/${userId}/images`, {
+            const response = await fetch(`${process.env.BASE_URL}/users/${userId}/images`, {
                 method: "PUT",
                 headers: {
                     Accept: "application/json",
@@ -86,7 +87,7 @@ export const useUserService = () => {
 
     const changePassword = async (token, userId, data) => {
         try {
-            const response = await fetch(`${BASE_URL}/users/${userId}/changePassword`, {
+            const response = await fetch(`${process.env.BASE_URL}/users/${userId}/changePassword`, {
                 method: "PUT",
                 headers: {
                     Accept: "application/json",

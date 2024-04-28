@@ -193,8 +193,8 @@ export default function FoodList({ navigation }) {
           placeholder="Search..."
           style={{
             flex: 1,
-            paddingVertical: 10,
-            paddingHorizontal: 10,
+            paddingVertical: 20,
+            paddingHorizontal: 20,
             paddingLeft: 40,
           }}
           onChangeText={handleSearchText}

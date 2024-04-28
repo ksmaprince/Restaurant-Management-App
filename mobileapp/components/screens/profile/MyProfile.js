@@ -74,7 +74,7 @@ export const MyProfile = ({ navigation }) => {
         <Background>
 
             <Pressable onPress={pickImage}>
-                {globalState.userInfo.image ? <Avatar.Image source={globalState.userInfo.image} size={150} /> : <Avatar.Image source={DEFAULT_PROFILE_URL} size={150} />}
+                {globalState.userInfo.image ? <Avatar.Image source={{uri: globalState.userInfo.image}} size={150} /> : <Avatar.Image source={{uri:DEFAULT_PROFILE_URL}} size={150} />}
             </Pressable>
             {loading && <ActivityIndicator size='small' />}
             <Header>{globalState.userInfo.name} </Header>

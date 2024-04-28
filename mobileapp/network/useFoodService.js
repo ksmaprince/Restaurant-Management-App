@@ -6,7 +6,7 @@ export const useFoodService = () => {
         try {
             console.log(food);
             
-            const response = await fetch(`${BASE_URL}/users/${userId}/foods`, {
+            const response = await fetch(`${process.env.BASE_URL}/users/${userId}/foods`, {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${userToken}`,
@@ -24,7 +24,7 @@ export const useFoodService = () => {
     const updateFood = async (token, userId, food) => {
         try {
             console.log("servicefood",food)
-            const response = await fetch(`${BASE_URL}/users/${userId}/foods/${food._id}`, {
+            const response = await fetch(`${process.env.BASE_URL}/users/${userId}/foods/${food._id}`, {
                 method: "PUT",
                 headers: {
                     Accept: "application/json",
@@ -44,7 +44,7 @@ export const useFoodService = () => {
 
     const deleteFood = async (token, userId, foodId) => {
         try {
-            const response = await fetch(`${BASE_URL}/users/${userId}/foods/${foodId}`, {
+            const response = await fetch(`${process.env.BASE_URL}/users/${userId}/foods/${foodId}`, {
                 method: "DELETE",
                 headers: {
                     Accept: "application/json",
@@ -60,7 +60,7 @@ export const useFoodService = () => {
     }
     const getFoods = async (token,userId) => {
         try {
-            const response = await fetch(`${BASE_URL}/users/${userId}/foods`, {
+            const response = await fetch(`${process.env.BASE_URL}/users/${userId}/foods`, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
