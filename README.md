@@ -22,4 +22,4 @@ All Notes, Edit, Add New Screens
 
 
 Profile, Edit, Change Password Screens
-![alt text](image.png)
+![alt text](screens/profile_edit_pwdchange.png)
